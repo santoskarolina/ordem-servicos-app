@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/api/user_api.dart';
 import 'package:flutter_application_1/models/user_model.dart';
-
 import 'home_page.dart';
 
 class Loginpage extends StatefulWidget {
@@ -48,13 +47,15 @@ class _LoginpageState extends State<Loginpage> {
       _isLoading = true;
    });
     UserRequest userRequest = UserRequest();
+
     userRequest.email = emailController.text;
     userRequest.password = senhaController.text;
+
     var response = await  UserService.login(userRequest);
     if (response) {
       setState(() {
       _isLoading = false;
-   });
+      });
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) =>  const HomePage(title: 'Services ON',)),
@@ -63,7 +64,7 @@ class _LoginpageState extends State<Loginpage> {
       setState(() {
       _isLoading = false;
       });
-      _showDialog();
+      _showDialog('Usuário e/ou senha incorretos', false, true);
     }
   }
 
@@ -76,128 +77,42 @@ class _LoginpageState extends State<Loginpage> {
     account.password = senhaController.text;
     account.user_name = nomeController.text;
     var response = await UserService.createAccount(account);
+
     if (response.statusCode == 201) {
       resetForm();
+
       setState(() {
         _isLoading = false;
         _isLoginForm = true;
       });
 
-      _userCreated();
+      _showDialog('Usuário criado com sucesso!', true, true);
     } else if (response.statusCode == 400) {
       setState(() {
         _isLoading = false;
       });
 
-      email();
+      _showDialog('Email já cadastrado', false, false);
     }
   }
 
-   void _showDialog() {
+   void _showDialog(String text, bool success, bool doLogin) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
         return AlertDialog(
-          content: const Text(
-            "Usuário e/ou senha incorretos",
-            style:  TextStyle(fontSize: 25),
-          ),
+          title: Text(success ? 'Sucesso!' : 'Ooppss'),
+          content: Text(text),
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                setState(() {
+                  doLogin ? _isLoginForm = true : _isLoginForm = false;
+                });
                 Navigator.of(context).pop();
               },
-              style: TextButton.styleFrom(
-                  backgroundColor: Colors.blue[700],
-                  fixedSize: const Size(100, 60),
-                  primary: Colors.blue[600],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  )),
               child: const Text(
                 'Fechar',
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _userCreated() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Usuário criado com sucesso!'),
-          content: const Text(
-            "Faça o login para acessar o aplicativo",
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                setState(() {
-                _isLoginForm = true;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Login',
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-
- void email() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Oopsss'),
-          content: const Text(
-            "Email já registrado",
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                setState(() {
-                _isLoginForm = false;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'OK',
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
- void _userCreatedFail() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: const Text('Falha!'),
-          content: const Text(
-            "Não foi possível criar a conta",
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                _isLoginForm = true;
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'OK',
               ),
             ),
           ],

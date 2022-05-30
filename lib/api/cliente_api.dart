@@ -36,7 +36,7 @@ class ClienteService {
   }
 
   static Future<Response> createCliente(String name, String cpf, String cell_phone) async {
-    var url = Uri.parse('${GlobalApi.url}/clientes/');
+    var url = Uri.parse('${GlobalApi.url}/clientes');
 
     var data = jsonEncode(
         <String, dynamic>{'name': name, 'cpf': cpf, 'cell_phone': cell_phone});

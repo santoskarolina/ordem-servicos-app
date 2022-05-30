@@ -58,7 +58,7 @@ class _EditClient extends State<EditClient> {
       setState(() {
         isLoading = false;
       });
-      _showDialog('Cpf já registrado', false, false);
+      _showDialog('CPF já registrado', false, false);
     } else  if(response.statusCode == 200){
       setState(() {
         isLoading = false;
@@ -77,20 +77,20 @@ class _EditClient extends State<EditClient> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(sucesso ? 'Sucesso' : 'oppss'),
+          title: Text(sucesso ? 'Sucesso' : 'Ooppss'),
           content: Text(text),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 goHome
-                    ? Navigator.pop(context)
-                    : Navigator.push(
+                    ? Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const HomePage(
                                   title: 'Meus serviços',
                                 )),
-                      );
+                      )
+                    : Navigator.pop(context);
               },
               child: const Text(
                 'OK',

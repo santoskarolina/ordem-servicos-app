@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import '../global_variable.dart';
@@ -18,6 +17,7 @@ class UserService {
       url,
       body: userRequest.toJson(),
     );
+      print(jsonEncode(response.body));
     if (response.statusCode == 201) {
       var accessToken2 = LoginResponse.fromJson(json.decode(response.body)).access_token;
       await prefs.setString('access_token', accessToken2!);
@@ -71,5 +71,4 @@ static Future<UserResponse> userProfile() async {
       throw Exception('Failed to load user data');
     }
   }
-
 }
