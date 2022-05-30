@@ -32,7 +32,7 @@ class DashbpardApi {
   }
 
   static Future<ServiceReport> getServiceReport() async {
-    var url = Uri.parse('${GlobalApi.url}/clientes/servicos/todos/report');
+    var url = Uri.parse('${GlobalApi.url}/servicos/todos/report');
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('access_token');

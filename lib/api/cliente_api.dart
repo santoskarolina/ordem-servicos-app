@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:io';
 import 'dart:convert';
 
@@ -90,7 +92,6 @@ class ClienteService {
     );
 
     if (response.statusCode == 200) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       var client = IRespCliente.fromJson(jsonDecode(response.body));
       return client;
     } else {
