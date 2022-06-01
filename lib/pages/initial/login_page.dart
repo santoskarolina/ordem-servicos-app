@@ -4,7 +4,9 @@ import 'package:flutter_application_1/models/user_model.dart';
 import 'home_page.dart';
 
 class Loginpage extends StatefulWidget {
-  const Loginpage({Key? key}) : super(key: key);
+
+  final bool loginConfirm ;
+  const Loginpage({Key? key, required this.loginConfirm}) : super(key: key);
 
   @override
   State<Loginpage> createState() => _LoginpageState();
@@ -17,8 +19,16 @@ class _LoginpageState extends State<Loginpage> {
   TextEditingController nomeController = TextEditingController();
 
   UserService userService = UserService();
-  bool _isLoading  = false;
   bool _isLoginForm  = true;
+  bool _isLoading  = false;
+
+  void getLoing() {
+    if (widget.loginConfirm) {
+      _isLoginForm = true;
+    } else {
+      _isLoginForm = false;
+    }
+  }
 
   void toggleFormMode() {
     resetForm();
@@ -38,7 +48,7 @@ class _LoginpageState extends State<Loginpage> {
 
  @override
  void initState(){
-   _isLoginForm = true;
+   getLoing();
    super.initState();
  }
 
@@ -129,7 +139,7 @@ class _LoginpageState extends State<Loginpage> {
             'Services ON',
             textAlign: TextAlign.center,
           ),
-          automaticallyImplyLeading: false,
+          // automaticallyImplyLeading: false,
           actions: null,
           centerTitle: true,
           backgroundColor: const Color.fromRGBO(42,68,171, 1),
@@ -146,15 +156,14 @@ class _LoginpageState extends State<Loginpage> {
   Widget circleImage() {
     return Center(
       child : Container(
-      width: 210.0,
-      height: 210.0,
-      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 30.0),
-      decoration: const BoxDecoration(
-          // color: Colors.blue,
-          shape: BoxShape.circle,
+      width: 310.0,
+      height: 250.0,
+      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 30.0),
+      decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
           image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/home.png',)
+          fit: BoxFit.contain,
+          image: _isLoginForm ?  const AssetImage('assets/login.png',) :  const AssetImage('assets/account.png',)
             )
         ),
      ),
@@ -244,10 +253,10 @@ class _LoginpageState extends State<Loginpage> {
             },
             style: TextButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(42,68,171, 1),
-                fixedSize: const Size(390, 100),
+                fixedSize: const Size(290, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(36),
                 )),
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator(
@@ -277,10 +286,10 @@ class _LoginpageState extends State<Loginpage> {
             },
             style: TextButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(42,68,171, 1),
-                fixedSize: const Size(390, 100),
+                fixedSize: const Size(290, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(36),
                 )),
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/api/user_api.dart';
 import 'package:flutter_application_1/pages/initial/dashboard_page.dart';
+import 'package:flutter_application_1/pages/initial/initial_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/user.dart';
@@ -118,7 +119,7 @@ class _HomePage extends State<HomePage> {
                 });
                Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Loginpage()),
+                  MaterialPageRoute(builder: (context) => const InitialPage()),
                 );
               },
             ),

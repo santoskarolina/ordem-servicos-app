@@ -73,6 +73,9 @@ flutter:
     - assets/service.jpg
     - assets/nodata.png
     - assets/home.png
+    - assets/account.png
+    - assets/initial.png
+    - assets/login.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
