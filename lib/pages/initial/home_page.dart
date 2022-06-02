@@ -13,14 +13,16 @@ import 'login_page.dart';
 class HomePage extends StatefulWidget {
   final String title;
 
-  const HomePage({ Key? key, required this.title }) : super(key: key,);
+  const HomePage({Key? key, required this.title})
+      : super(
+          key: key,
+        );
 
   @override
   _HomePage createState() => _HomePage();
 }
 
 class _HomePage extends State<HomePage> {
-
   int _selectedIndex = 1;
   late Future<UserResponse> _userLog;
 
@@ -29,12 +31,11 @@ class _HomePage extends State<HomePage> {
     prefs.clear();
   }
 
-  void getUserData(){
+  void getUserData() {
     setState(() {
       _userLog = UserService.userProfile();
     });
   }
-
 
   @override
   void initState() {
@@ -45,99 +46,125 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(title: Text(widget.title), backgroundColor: const Color.fromRGBO(42,68,171, 1),),
-       body: _getDrawerItem(_selectedIndex),
+      appBar: AppBar(
+        title: Text(widget.title),
+        backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+      ),
+      body: _getDrawerItem(_selectedIndex),
       drawer: Drawer(
         child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              UserAccountsDrawerHeader(
-                decoration: const BoxDecoration(color:  Color.fromRGBO(42,68,171, 1),),
-                accountName: const Text('Usuário', style: TextStyle(fontSize: 20),),
-                accountEmail: FutureBuilder<UserResponse> (
-                  future: _userLog,
-                  builder: (context, snapshot){
-                    if(snapshot.hasData){
-                      return Text(snapshot.data!.user_name, style: const TextStyle(fontSize: 20),);
-                    }else if(snapshot.hasError){
-                      "_";
-                    }
-                    return const CircularProgressIndicator();
-                  },
-                ),
-                currentAccountPicture: const CircleAvatar(
-                  radius: 30.0,
-                  backgroundImage: 
-                 AssetImage('assets/user.jpg',),
-                  backgroundColor: Colors.transparent,
-                ),
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              decoration: const BoxDecoration(
+                color: Color.fromRGBO(42, 68, 171, 1),
               ),
-              ListTile(
+              accountName: const Text(
+                'Usuário',
+                style: TextStyle(fontSize: 20),
+              ),
+              accountEmail: FutureBuilder<UserResponse>(
+                future: _userLog,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      snapshot.data!.user_name,
+                      style: const TextStyle(fontSize: 20),
+                    );
+                  } else if (snapshot.hasError) {
+                    "_";
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+              currentAccountPicture: const CircleAvatar(
+                radius: 30.0,
+                backgroundImage: AssetImage(
+                  'assets/user.jpg',
+                ),
+                backgroundColor: Colors.transparent,
+              ),
+            ),
+            ListTile(
               leading: const Icon(Icons.dashboard),
-              title: const Text("Dashboard",
-              style: TextStyle(fontSize: 20),),
+              title: const Text(
+                "Dashboard",
+                style: TextStyle(fontSize: 17),
+              ),
               selected: 1 == _selectedIndex,
+              trailing: const Icon(Icons.arrow_right),
               onTap: () {
                 _onSelectItem(1);
               },
             ),
             ListTile(
               leading: const Icon(Icons.work),
-              title: const Text("Serviços",
-              style: TextStyle(fontSize: 20),),
+              title: const Text(
+                "Serviços",
+                style: TextStyle(fontSize: 17),
+              ),
               selected: 2 == _selectedIndex,
+              trailing: const Icon(Icons.arrow_right),
               onTap: () {
                 _onSelectItem(2);
               },
             ),
             ListTile(
               leading: const Icon(Icons.people),
-              title: const Text("Clientes",
-              style: TextStyle(fontSize: 20),),
+              title: const Text(
+                "Clientes",
+                style: TextStyle(fontSize: 17),
+              ),
               selected: 3 == _selectedIndex,
+              trailing: const Icon(Icons.arrow_right),
               onTap: () {
                 _onSelectItem(3);
               },
             ),
-            
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text("Meu perfil",
-              style: TextStyle(fontSize: 20),),
+              title: const Text(
+                "Meu perfil",
+                style: TextStyle(fontSize: 17),
+              ),
               selected: 4 == _selectedIndex,
-               onTap: () {
+              trailing: const Icon(Icons.arrow_right),
+              onTap: () {
                 _onSelectItem(4);
               },
             ),
             ListTile(
               leading: const Icon(Icons.logout),
-              title: const Text("Sair",
-              style: TextStyle(fontSize: 20),),
+              title: const Text(
+                "Sair",
+                style: TextStyle(fontSize: 17),
+              ),
+              trailing: const Icon(Icons.arrow_right),
               onTap: () {
                 setState(() {
                   clearLocalStorage();
                 });
-               Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const InitialPage()),
                 );
               },
             ),
-            ],
+          ],
         ),
       ),
-      );
+    );
   }
 
-    _getDrawerItem(int pos) {
+  _getDrawerItem(int pos) {
     switch (pos) {
       case 1:
         return const Dashboard();
       case 2:
         return const ServicesPage();
-      case 3: 
+      case 3:
         return const CLientesPage();
-      case 4 :
+      case 4:
         return const MyProfile();
     }
   }
