@@ -55,35 +55,27 @@ class _HomePage extends State<HomePage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            UserAccountsDrawerHeader(
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(42, 68, 171, 1),
-              ),
-              accountName: const Text(
-                'Usuário',
-                style: TextStyle(fontSize: 20),
-              ),
-              accountEmail: FutureBuilder<UserResponse>(
-                future: _userLog,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                      snapshot.data!.user_name,
-                      style: const TextStyle(fontSize: 20),
-                    );
-                  } else if (snapshot.hasError) {
-                    "_";
-                  }
-                  return const CircularProgressIndicator();
-                },
-              ),
-              currentAccountPicture: const CircleAvatar(
-                radius: 30.0,
-                backgroundImage: AssetImage(
-                  'assets/user.jpg',
-                ),
-                backgroundColor: Colors.transparent,
-              ),
+            FutureBuilder<UserResponse>(
+              future: _userLog,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return UserAccountsDrawerHeader(
+                    decoration: const BoxDecoration(
+                      color: Color.fromRGBO(42, 68, 171, 1),
+                    ),
+                    accountEmail: Text(snapshot.data!.email),
+                    accountName: Text(snapshot.data!.user_name),
+                    currentAccountPicture: CircleAvatar(
+                      radius: 30.0,
+                      backgroundImage: NetworkImage(
+                        snapshot.data!.photo,
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                  );
+                }
+                return const CircularProgressIndicator();
+              },
             ),
             ListTile(
               leading: const Icon(Icons.dashboard),

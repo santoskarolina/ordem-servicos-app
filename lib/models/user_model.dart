@@ -5,8 +5,9 @@ class User {
   String? user_name;
   String? email;
   String? creation_date;
+  String? photo;
 
-   User({this.user_id, this.user_name, this.email, this.creation_date});
+   User({this.user_id, this.user_name, this.email, this.creation_date, this.photo});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -14,6 +15,7 @@ class User {
       user_name: json["user_name"],
       email: json["email"],
       creation_date: json["creation_date"],
+      photo: json["photo"],
     );
   }
 }

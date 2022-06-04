@@ -89,16 +89,16 @@ class _MyProfile extends State<MyProfile> {
   }
 
   
-Widget circleImage() {
+Widget circleImage(snapshot) {
     return Center(
       child : Container(
       width: 190.0,
       height: 190.0,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           shape: BoxShape.circle,
           image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage('assets/user.jpg',)
+          image: NetworkImage(snapshot!.data.photo)
             )
         ),
      ),
@@ -110,7 +110,7 @@ Widget circleImage() {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        children: [circleImage(), _showCard(snapshot)],
+        children: [circleImage(snapshot), _showCard(snapshot)],
       ),
     );
   }

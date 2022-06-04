@@ -5,12 +5,14 @@ class UserResponse {
   final String user_name;
   final String email;
   final String creation_date;
+  final String photo;
 
   const UserResponse({ 
     required this.user_id, 
     required this.user_name, 
     required this.email, 
-    required this.creation_date
+    required this.creation_date,
+    required this.photo,
   });
 
   factory  UserResponse.fromJson(Map<String, dynamic> json){
@@ -19,6 +21,7 @@ class UserResponse {
         user_name: json['user_name'],
         email: json['email'],
         creation_date : json['creation_date'],
+        photo : json['photo'],
     );
   }
 
@@ -27,5 +30,6 @@ class UserResponse {
         'user_name': user_name,
         'email': email,
         'creation_date': creation_date,
+        'photo': photo,
     };
 }
