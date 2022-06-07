@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/client_model.dart';
 import '../../api/cliente_api.dart';
@@ -12,21 +14,30 @@ class CreateService extends StatefulWidget {
 
 class _CreateService extends State<CreateService> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController descController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController cliController = TextEditingController();
 
   final ClienteService _clienteService = ClienteService();
-  late Future<List<RespCliente>> _clientes;
+  List<RespCliente> respCliente = [];
+
   bool isLoading = false;
 
-  getClientes() async {
-    _clientes = _clienteService.get();
+  String dropdownValue = 'One';
+
+  void getClientes() async {
+    final response = await _clienteService.getClintes();
+    for (RespCliente cliente in response) {
+      respCliente.add(cliente);
+    }
+    print(jsonEncode(respCliente));
   }
 
   @override
   void initState() {
     super.initState();
+    getClientes();
   }
 
   void _showDialog() {
@@ -137,8 +148,7 @@ class _CreateService extends State<CreateService> {
             icon: Icon(
               Icons.money,
               color: Colors.grey,
-            )
-          ),
+            )),
         validator: (value) => value!.isEmpty ? 'Informe o valor' : null,
       ),
     );
@@ -150,8 +160,7 @@ class _CreateService extends State<CreateService> {
         child: SizedBox(
           height: 55.0,
           child: TextButton(
-            onPressed: () {
-            },
+            onPressed: () {},
             style: TextButton.styleFrom(
                 backgroundColor: Colors.blue[700],
                 fixedSize: const Size(390, 100),
@@ -196,7 +205,6 @@ class _CreateService extends State<CreateService> {
         ));
   }
 
-  
   Widget _showForm() {
     return Container(
         padding: const EdgeInsets.all(16.0),
@@ -206,11 +214,37 @@ class _CreateService extends State<CreateService> {
             shrinkWrap: true,
             children: <Widget>[
               showDescriptioninput(),
+              selectUser(),
               showPriceInput(),
               showPrimaryButton(),
               showCancelButton(),
             ],
           ),
         ));
+  }
+
+  Widget selectUser() {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      icon: const Icon(Icons.arrow_downward),
+      elevation: 16,
+      style: const TextStyle(color: Colors.deepPurple),
+      underline: Container(
+        height: 2,
+        color: Colors.deepPurpleAccent,
+      ),
+      onChanged: (String? newValue) {
+        setState(() {
+          dropdownValue = newValue!;
+        });
+      },
+      items: respCliente
+          .map<DropdownMenuItem<String>>((dynamic value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
   }
 }

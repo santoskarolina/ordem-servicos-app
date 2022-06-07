@@ -17,7 +17,6 @@ class UserService {
       url,
       body: userRequest.toJson(),
     );
-      print(jsonEncode(response.body));
     if (response.statusCode == 201) {
       var accessToken2 = LoginResponse.fromJson(json.decode(response.body)).access_token;
       await prefs.setString('access_token', accessToken2!);

@@ -10,12 +10,17 @@ import '../models/client_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+
+
+
 class ClienteService {
   var url = Uri.parse('${GlobalApi.url}/clientes');
 
-  Future<List<RespCliente>> get() async {
+  Future<List<RespCliente>> getClintes() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    
     String? token = prefs.getString('access_token');
+
     http.Response response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
     });

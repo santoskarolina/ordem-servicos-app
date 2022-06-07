@@ -26,7 +26,7 @@ class _CLientesPage extends State<CLientesPage> {
 
   void getClientes() {
     setState(() {
-      _clientes = _clienteService.get();
+      _clientes = _clienteService.getClintes();
     });
   }
 
