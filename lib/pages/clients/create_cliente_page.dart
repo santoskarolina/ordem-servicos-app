@@ -150,6 +150,7 @@ class _CreateClient extends State<CreateClient> {
       padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: TextFormField(
         maxLines: 1,
+        maxLength: 100,
         controller: nomeController,
         keyboardType: TextInputType.text,
         autofocus: false,
@@ -159,7 +160,14 @@ class _CreateClient extends State<CreateClient> {
               Icons.person,
               color: Colors.grey,
             )),
-        validator: (value) => value!.isEmpty ? 'Informe o nome' : null,
+        validator: (value) {
+          if(value!.isEmpty){
+            return 'Informe o nome';
+          }else if(value.length < 5){
+             return 'Informe um nome válido';
+          }
+          return null;
+        }
       ),
     );
   }
@@ -169,6 +177,7 @@ class _CreateClient extends State<CreateClient> {
       padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: TextFormField(
         maxLines: 1,
+        maxLength: 11,
         controller: cpfController,
         keyboardType: TextInputType.number,
         autofocus: false,
@@ -178,7 +187,16 @@ class _CreateClient extends State<CreateClient> {
               Icons.person,
               color: Colors.grey,
             )),
-        validator: (value) => value!.isEmpty ? 'Informe o CPF' : null,
+        validator: (value) {
+          if(value!.isEmpty){
+            return 'Informe o cpf';
+          }else if(value.length < 11){
+             return 'Informe um cpf válido';
+          }else if(value.length > 11) {
+            return 'Informe um cpf válido';
+          }
+          return null;
+        }
       ),
     );
   }
@@ -188,6 +206,7 @@ class _CreateClient extends State<CreateClient> {
       padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: TextFormField(
         maxLines: 1,
+        maxLength: 25,
         controller: telefoneController,
         keyboardType: TextInputType.number,
         autofocus: false,
@@ -197,7 +216,16 @@ class _CreateClient extends State<CreateClient> {
               Icons.phone,
               color: Colors.grey,
             )),
-        validator: (value) => value!.isEmpty ? 'Informe o telefone' : null,
+        validator: (value) {
+          if(value!.isEmpty){
+            return 'Informe o telefone';
+          }else if(value.length < 8){
+             return 'Informe um telefone válido';
+          }else if(value.length > 25) {
+            return 'Informe um telefone válido';
+          }
+          return null;
+        }
       ),
     );
   }

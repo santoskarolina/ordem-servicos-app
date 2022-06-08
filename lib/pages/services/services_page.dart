@@ -17,7 +17,6 @@ class _ServicesPage extends State<ServicesPage> {
   final ServicesService _servicesService = ServicesService();
   late Future<List<Service>> _services;
 
-
   void getCLientes() {
     setState(() {
       _services = _servicesService.get();
@@ -99,6 +98,22 @@ class _ServicesPage extends State<ServicesPage> {
     );
   }
 
+
+Widget _loadingDialog() {
+    return AlertDialog(
+      content: Row(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: CircularProgressIndicator(),
+          ),
+          // const CircularProgressIndicator(),
+          const Text('Processando...'),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,7 +147,7 @@ class _ServicesPage extends State<ServicesPage> {
               }else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
-              return const CircularProgressIndicator();
+              return _loadingDialog();
             },
           )),
       floatingActionButton: FloatingActionButton(

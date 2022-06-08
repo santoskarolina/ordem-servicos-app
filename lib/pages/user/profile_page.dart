@@ -54,7 +54,7 @@ class _MyProfile extends State<MyProfile> {
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
-            return const CircularProgressIndicator();
+            return _loadingDialog();
           },
         ),
       ),
@@ -84,6 +84,21 @@ class _MyProfile extends State<MyProfile> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _loadingDialog() {
+    return AlertDialog(
+      content: Row(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: CircularProgressIndicator(),
+          ),
+          // const CircularProgressIndicator(),
+          const Text('Processando...'),
+        ],
       ),
     );
   }

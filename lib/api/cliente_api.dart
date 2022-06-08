@@ -5,14 +5,10 @@ import 'dart:convert';
 
 import 'package:flutter_application_1/global_variable.dart';
 import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/client_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
-
-
-
 class ClienteService {
   var url = Uri.parse('${GlobalApi.url}/clientes');
 
@@ -43,8 +39,7 @@ class ClienteService {
   static Future<Response> createCliente(String name, String cpf, String cell_phone) async {
     var url = Uri.parse('${GlobalApi.url}/clientes');
 
-    var data = jsonEncode(
-        <String, dynamic>{'name': name, 'cpf': cpf, 'cell_phone': cell_phone});
+    var data = jsonEncode(<String, dynamic>{'name': name, 'cpf': cpf, 'cell_phone': cell_phone});
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('access_token');
 

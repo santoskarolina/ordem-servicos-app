@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/client_model.dart';
 import '../../api/cliente_api.dart';
+import '../../api/services_api.dart';
 import '../../global_variable.dart';
+import '../../models/services_model.dart';
 import '../initial/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -43,7 +45,6 @@ class _CreateService extends State<CreateService> {
 
     setState(() {
       data = resBody;
-      print(resBody);
       items = data
           .map((item) => DropdownMenuItem(
               child: Text(item['name']), value: item['client_id']))
@@ -53,8 +54,6 @@ class _CreateService extends State<CreateService> {
     return "Sucess";
   }
 
-  String dropdownValue = 'One';
-
   void getClientes() async {
     final response = await _clienteService.getClintes();
     for (RespCliente cliente in response) {
@@ -62,23 +61,42 @@ class _CreateService extends State<CreateService> {
     }
   }
 
+  void save() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    var cliente =
+        RespCliente(cell_phone: '', name: '', client_id: _mySelection);
+    var service = ServiceCreate();
+    service.client = cliente;
+    service.description = descController.text;
+
+    var price = int.parse(priceController.text);
+    service.price = price;
+
+    var response = await ServicesService.createService(service);
+    if (response.statusCode == 201) {
+      _dialog('Serviço cadastrado com sucesso!', true);
+    } else {
+      _dialog('Não foi possível cadastrar este serviço', false);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    // getClientes();
     getData();
   }
 
-  void _showDialog() {
+  void _dialog(String text, bool success) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // retorna um objeto do tipo Dialog
         return AlertDialog(
-          title: const Text('Sucesso!'),
-          content: const Text(
-            "Serviço cadastrado com sucesso!",
-          ),
+          title: success ? const Text('Sucesso!') : const Text('Que pena!'),
+          content: Text(text),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -89,30 +107,6 @@ class _CreateService extends State<CreateService> {
                             title: 'Meus serviços',
                           )),
                 );
-              },
-              child: const Text(
-                'OK',
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDialogFail() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Falha!'),
-          content: const Text(
-            "Não foi possível salvar este serviço",
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
               },
               child: const Text(
                 'OK',
@@ -159,7 +153,15 @@ class _CreateService extends State<CreateService> {
               Icons.description,
               color: Colors.grey,
             )),
-        validator: (value) => value!.isEmpty ? 'Informe a descrição' : null,
+        // validator: (value) => value!.isEmpty ? 'Informe a descrição' : null,
+        validator: (value) {
+          if(value!.isEmpty){
+            return 'Informe a descrição';
+          }else if(value.length < 10){
+             return 'Descreva mais sobre o serviço';
+          }
+          return null;
+        }
       ),
     );
   }
@@ -189,7 +191,11 @@ class _CreateService extends State<CreateService> {
         child: SizedBox(
           height: 55.0,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                save();
+              }
+            },
             style: TextButton.styleFrom(
                 backgroundColor: Colors.blue[700],
                 fixedSize: const Size(390, 100),
@@ -253,20 +259,22 @@ class _CreateService extends State<CreateService> {
   }
 
   Widget selectUser() {
-    return  Padding(
+    return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
-        child: DropdownButtonFormField<dynamic>(
-          icon: const Icon(Icons.keyboard_arrow_down),
-          iconSize: 15,
-          elevation: 16,
-          items: items,
-          value: _mySelection,
-          onChanged: (newVal) {
-            setState(() {
-              _mySelection = newVal as int;
-            });
-          },
-        ),
-      );
+      child: DropdownButtonFormField<dynamic>(
+        icon: const Icon(Icons.keyboard_arrow_down),
+        iconSize: 15,
+        hint: const Text('Cliente'),
+        elevation: 16,
+        items: items,
+        value: _mySelection,
+        validator: (value) => value == null ? 'informe o cliente' : null,
+        onChanged: (newVal) {
+          setState(() {
+            _mySelection = newVal as int;
+          });
+        },
+      ),
+    );
   }
 }

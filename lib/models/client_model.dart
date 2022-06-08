@@ -1,5 +1,5 @@
 class Cliente {
-  final int client_id;
+  late final int client_id;
   final String name;
   String? cpf;
   final String cell_phone;
@@ -41,14 +41,14 @@ class RespCliente {
 
   Map<String, dynamic> toJson() => {
         'client_id': client_id,
-        'name': name,
-        'cell_phone': cell_phone,
+        'name': name.toString(),
+        'cell_phone': cell_phone.toString(),
     };
 }
 
 class IRespCliente {
    int? client_id;
-  String? name;
+    String? name;
    String? cell_phone;
    String? cpf;
 

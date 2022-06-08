@@ -2,6 +2,8 @@
 
 // import 'dart:convert';
 
+import 'dart:convert';
+
 import 'client_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -15,10 +17,10 @@ class Service {
   final String opening_date;
   final String? closing_date;
 
-  Service(this.service_id, this.description, this.status,
-      this.closing_date, this.opening_date, this.price);
+  Service(this.service_id, this.description, this.status, this.closing_date,
+      this.opening_date, this.price);
 
-  Service.fromJson(Map<String, dynamic> json) 
+  Service.fromJson(Map<String, dynamic> json)
       : service_id = json["service_id"],
         description = json["description"],
         status = Status.fromJson(json['status']),
@@ -34,7 +36,7 @@ class Status {
 
   Status({this.status_id, this.name, this.code});
 
-  factory  Status.fromJson(Map<String, dynamic> json) {
+  factory Status.fromJson(Map<String, dynamic> json) {
     return Status(
       status_id: json['status_id'],
       name: json['name'],
@@ -52,10 +54,10 @@ class RespService {
   final String opening_date;
   final String? closing_date;
 
-  RespService(this.service_id, this.description, this.status,
-      this.closing_date, this.client, this.opening_date, this.price);
+  RespService(this.service_id, this.description, this.status, this.closing_date,
+      this.client, this.opening_date, this.price);
 
-  RespService.fromJson(Map<String, dynamic> json) 
+  RespService.fromJson(Map<String, dynamic> json)
       : service_id = json["service_id"],
         description = json["description"],
         status = Status.fromJson(json['status']),
@@ -63,4 +65,23 @@ class RespService {
         price = json["price"],
         closing_date = json["closing_date"],
         opening_date = json["opening_date"];
+}
+
+class ServiceCreate {
+  String? description;
+  RespCliente? client;
+  int? price;
+
+  ServiceCreate({this.description, this.price, this.client});
+
+  Map toJson() {
+    // Map<String, dynamic>? client = this.client != null ? this.client!.toJson() : null;
+    Map<String, dynamic> client =  this.client!.toJson();
+    Map<String, dynamic> service = {
+      'price': price?.toInt(),
+      'description': description.toString(),
+      'client': client
+    };
+    return service;
+  }
 }

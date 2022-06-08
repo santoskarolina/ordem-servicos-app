@@ -33,7 +33,7 @@ class _CLientesPage extends State<CLientesPage> {
   void deletarCliente(RespCliente cliente) async {
     var delete = await ClienteService.deletarCliente(cliente.client_id);
     if (delete.statusCode == 500) {
-    _showMessage('Não foi possível deletar este cliente', false);
+      _showMessage('Não foi possível deletar este cliente', false);
     } else {
       setState(() {
         getClientes();
@@ -49,7 +49,9 @@ class _CLientesPage extends State<CLientesPage> {
         // retorna um objeto do tipo Dialog
         return AlertDialog(
           title: const Text('Deletar cliente?'),
-          content: const Text("Esta ação não poderá ser desfeita",),
+          content: const Text(
+            "Esta ação não poderá ser desfeita",
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -74,15 +76,16 @@ class _CLientesPage extends State<CLientesPage> {
     );
   }
 
-
-void _showMessage(String text, bool sucesso) {
+  void _showMessage(String text, bool sucesso) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // retorna um objeto do tipo Dialog
         return AlertDialog(
-          title: Text(sucesso ? 'Sucesso' :  'Oopsss'),
-          content: Text(text,),
+          title: Text(sucesso ? 'Sucesso' : 'Oopsss'),
+          content: Text(
+            text,
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -98,6 +101,21 @@ void _showMessage(String text, bool sucesso) {
     );
   }
 
+  Widget _loadingDialog() {
+    return AlertDialog(
+      content: Row(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: CircularProgressIndicator(),
+          ),
+          // const CircularProgressIndicator(),
+          const Text('Processando...'),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,33 +127,42 @@ void _showMessage(String text, bool sucesso) {
             future: _clientes,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                if(snapshot.data!.isNotEmpty){
-                return ListView.builder(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      RespCliente resp = snapshot.data![index];
-                      return ListTile(
-                        leading: const CircleAvatar(
-                          backgroundColor: Colors.blueAccent,
-                          backgroundImage: AssetImage('assets/cliente.jpg'),
-                        ),
-                        title: Text(resp.name),
-                        subtitle: Text("Telefone: ${resp.cell_phone}"),
-                        trailing: menu(resp),
-                      );
-                    });
-                }else{
+                if (snapshot.data!.isNotEmpty) {
+                  return ListView.builder(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        RespCliente resp = snapshot.data![index];
+                        return ListTile(
+                          leading: const CircleAvatar(
+                            backgroundColor: Colors.blueAccent,
+                            backgroundImage: AssetImage('assets/cliente.jpg'),
+                          ),
+                          title: Text(resp.name),
+                          onTap: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ClienteInfoPage(
+                                        clienteid: resp.client_id,
+                                      )),
+                            ),
+                          },
+                          subtitle: Text("Telefone: ${resp.cell_phone}"),
+                          trailing: menu(resp),
+                        );
+                      });
+                } else {
                   return _showContainer();
                 }
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
-              return const CircularProgressIndicator();
+              return _loadingDialog();
             },
           )),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromRGBO(42,68,171, 1),
+        backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
         onPressed: () => {
           Navigator.push(
             context,
@@ -164,26 +191,29 @@ void _showMessage(String text, bool sucesso) {
       child: Text(
         'Sem clientes cadastrados',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 30, color: Color.fromARGB(255, 103, 101, 101), ),
+        style: TextStyle(
+          fontSize: 30,
+          color: Color.fromARGB(255, 103, 101, 101),
+        ),
       ),
     );
   }
 
   Widget circleImage() {
     return Center(
-      child : Container(
-      width: 200.0,
-      height: 200.0,
-      decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/nodata.png',)
-            )
-        ),
-     ),
-   );
-  } 
+      child: Container(
+        width: 200.0,
+        height: 200.0,
+        decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage(
+                  'assets/nodata.png',
+                ))),
+      ),
+    );
+  }
 
   Widget menu(RespCliente cliente) {
     return PopupMenuButton<Menu>(
@@ -198,7 +228,9 @@ void _showMessage(String text, bool sucesso) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ClienteInfoPage( clienteid: cliente.client_id,)),
+                      builder: (context) => ClienteInfoPage(
+                            clienteid: cliente.client_id,
+                          )),
                 );
                 break;
             }
@@ -213,7 +245,6 @@ void _showMessage(String text, bool sucesso) {
                 value: Menu.atualizar,
                 child: Text('Detalhes'),
               ),
-            ]
-        );
+            ]);
   }
 }

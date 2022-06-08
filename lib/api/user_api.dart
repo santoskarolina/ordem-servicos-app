@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserService {
   static Future<bool> login(UserRequest userRequest) async {
     var url = Uri.parse('${GlobalApi.url}/auth/login');
-    
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final response = await http.post(
@@ -18,7 +18,8 @@ class UserService {
       body: userRequest.toJson(),
     );
     if (response.statusCode == 201) {
-      var accessToken2 = LoginResponse.fromJson(json.decode(response.body)).access_token;
+      var accessToken2 =
+          LoginResponse.fromJson(json.decode(response.body)).access_token;
       await prefs.setString('access_token', accessToken2!);
 
       return true;
@@ -30,17 +31,15 @@ class UserService {
   static Future<Response> createAccount(UserCreateAccount user) async {
     var url = Uri.parse('${GlobalApi.url}/user');
     var response2 = await http.post(
-          url,
-          body: user.toJson(),
-        );
-        final response = response2;
+      url,
+      body: user.toJson(),
+    );
+    final response = response2;
 
-    
     return response;
   }
 
-
-static Future<UserResponse> userProfile() async {
+  static Future<UserResponse> userProfile() async {
     var url = Uri.parse('${GlobalApi.url}/user/infos');
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
