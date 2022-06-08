@@ -51,14 +51,16 @@ class UserCreateAccount {
   String? user_name;
    String? email;
   String? password;
+  String photo; 
 
-  UserCreateAccount({this.password, this.email, this.user_name});
+  UserCreateAccount({this.password, this.email, this.user_name,  required this.photo});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       'email': email.toString(),
       'password': password.toString(),
       'user_name': user_name.toString(),
+      'photo': photo.toString(),
     };
     return map;
   }

@@ -29,19 +29,12 @@ class UserService {
 
   static Future<Response> createAccount(UserCreateAccount user) async {
     var url = Uri.parse('${GlobalApi.url}/user');
+    var response2 = await http.post(
+          url,
+          body: user.toJson(),
+        );
+        final response = response2;
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('access_token');
-
-    final headers = {
-      HttpHeaders.authorizationHeader: 'Bearer $token',
-    };
-
-    final response = await http.post(
-      url,
-      body: user.toJson(),
-      headers: headers,
-    );
     
     return response;
   }

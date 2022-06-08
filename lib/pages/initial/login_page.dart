@@ -129,7 +129,7 @@ class _LoginpageState extends State<Loginpage> {
     setState(() {
       _isLoading = true;
     });
-    UserCreateAccount account = UserCreateAccount();
+    UserCreateAccount account = UserCreateAccount(photo: '');
     account.email = emailController.text;
     account.password = senhaController.text;
     account.user_name = nomeController.text;

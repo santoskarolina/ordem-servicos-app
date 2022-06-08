@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/client_model.dart';
 import '../../api/cliente_api.dart';
+import '../../global_variable.dart';
 import '../initial/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class CreateService extends StatefulWidget {
   const CreateService({Key? key}) : super(key: key);
@@ -21,8 +24,34 @@ class _CreateService extends State<CreateService> {
 
   final ClienteService _clienteService = ClienteService();
   List<RespCliente> respCliente = [];
+  List data = [];
+  List<DropdownMenuItem> items = [];
+  int _mySelection = 0;
 
   bool isLoading = false;
+
+  Future<String> getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var url = Uri.parse('${GlobalApi.url}/clientes');
+    String? token = prefs.getString('access_token');
+
+    var response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
+    });
+
+    var resBody = json.decode(response.body);
+
+    setState(() {
+      data = resBody;
+      print(resBody);
+      items = data
+          .map((item) => DropdownMenuItem(
+              child: Text(item['name']), value: item['client_id']))
+          .toList();
+      _mySelection = data[0]["client_id"];
+    });
+    return "Sucess";
+  }
 
   String dropdownValue = 'One';
 
@@ -31,13 +60,13 @@ class _CreateService extends State<CreateService> {
     for (RespCliente cliente in response) {
       respCliente.add(cliente);
     }
-    print(jsonEncode(respCliente));
   }
 
   @override
   void initState() {
     super.initState();
-    getClientes();
+    // getClientes();
+    getData();
   }
 
   void _showDialog() {
@@ -214,8 +243,8 @@ class _CreateService extends State<CreateService> {
             shrinkWrap: true,
             children: <Widget>[
               showDescriptioninput(),
-              selectUser(),
               showPriceInput(),
+              selectUser(),
               showPrimaryButton(),
               showCancelButton(),
             ],
@@ -224,27 +253,20 @@ class _CreateService extends State<CreateService> {
   }
 
   Widget selectUser() {
-    return DropdownButton<String>(
-      value: dropdownValue,
-      icon: const Icon(Icons.arrow_downward),
-      elevation: 16,
-      style: const TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: (String? newValue) {
-        setState(() {
-          dropdownValue = newValue!;
-        });
-      },
-      items: respCliente
-          .map<DropdownMenuItem<String>>((dynamic value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
+    return  Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+        child: DropdownButtonFormField<dynamic>(
+          icon: const Icon(Icons.keyboard_arrow_down),
+          iconSize: 15,
+          elevation: 16,
+          items: items,
+          value: _mySelection,
+          onChanged: (newVal) {
+            setState(() {
+              _mySelection = newVal as int;
+            });
+          },
+        ),
+      );
   }
 }
