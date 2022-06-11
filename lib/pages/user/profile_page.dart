@@ -97,7 +97,7 @@ class _MyProfile extends State<MyProfile> {
             child: CircularProgressIndicator(),
           ),
           // const CircularProgressIndicator(),
-          const Text('Processando...'),
+          const Text('Carregando...'),
         ],
       ),
     );
@@ -129,4 +129,5 @@ Widget circleImage(snapshot) {
       ),
     );
   }
+  
 }

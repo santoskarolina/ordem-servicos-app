@@ -1,4 +1,17 @@
+// Copyright 2013 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// ignore_for_file: public_member_api_docs
+
+import 'dart:async';
+import 'dart:io';
+
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:flutter_application_1/api/user_api.dart';
 import 'package:flutter_application_1/models/user_model.dart';
 import 'home_page.dart';
@@ -16,11 +29,16 @@ class _LoginpageState extends State<Loginpage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
   TextEditingController nomeController = TextEditingController();
-  String mySelection = '';
+  String _mySelection = "";
+  bool _diseableButton = false;
+
 
   UserService userService = UserService();
   bool _isLoginForm = true;
   bool _isLoading = false;
+
+final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   void getLoing() {
     if (widget.loginConfirm) {
@@ -29,55 +47,7 @@ class _LoginpageState extends State<Loginpage> {
       _isLoginForm = false;
     }
   }
-
-  List<Map> myImages = [
-    {
-      "value": "https://services-on.netlify.app/assets/avatar-01.png",
-      "image": "https://services-on.netlify.app/assets/avatar-01.png",
-      "text": "Avatar 1"
-    },
-    {
-      "value": "https://services-on.netlify.app/assets/avatar-02.png",
-      "image": "https://services-on.netlify.app/assets/avatar-02.png",
-      "text": "Avatar 2"
-    },
-    {
-      "value": "https://services-on.netlify.app/assets/avatar-03.png",
-      "image": "https://services-on.netlify.app/assets/avatar-03.png",
-      "text": "Avatar 3"
-    },
-    {
-      "value": "https://services-on.netlify.app/assets/avatar-04.png",
-      "image": "https://services-on.netlify.app/assets/avatar-04.png",
-      "text": "Avatar 4"
-    },
-    {
-      "value": "https://services-on.netlify.app/assets/avatar-05.png",
-      "image": "https://services-on.netlify.app/assets/avatar-05.png",
-      "text": "Avatar 5"
-    },
-    {
-      "value": "https://services-on.netlify.app/assets/avatar-06.png",
-      "image": "https://services-on.netlify.app/assets/avatar-06.png",
-      "text": "Avatar 6"
-    },
-    {
-      "value": "https://services-on.netlify.app/assets/avatar-07.png",
-      "image": "https://services-on.netlify.app/assets/avatar-07.png",
-      "text": "Avatar 7"
-    },
-    {
-      "value": "https://services-on.netlify.app/assets/avatar-08.png",
-      "image": "https://services-on.netlify.app/assets/avatar-08.png",
-      "text": "Avatar 8"
-    },
-    {
-      "value": "https://services-on.netlify.app/assets/avatar-09.png",
-      "image": "https://services-on.netlify.app/assets/avatar-09.png",
-      "text": "Avatar 9"
-    },
-  ];
-
+  
   void toggleFormMode() {
     resetForm();
     setState(() {
@@ -95,13 +65,58 @@ class _LoginpageState extends State<Loginpage> {
 
   @override
   void initState() {
-    getLoing();
     super.initState();
+    initConnectivity();
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+    getLoing();
   }
+
+  Future<void> initConnectivity() async {
+    ConnectivityResult result = ConnectivityResult.none;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e.toString());
+    }
+    if (!mounted) {
+      return Future.value(null);
+    }
+    return _updateConnectionStatus(result);
+}
+    
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    switch (result) {
+      case ConnectivityResult.wifi:
+         _diseableButton = false;
+        setState(() => print(result.toString()));
+        break;
+      case ConnectivityResult.mobile:
+         _diseableButton = false;
+      setState(() => print(result.toString()));
+        break;
+      case ConnectivityResult.none:
+         _diseableButton = true;
+        _showDialogConnection();
+        break;
+      default:
+        _showDialogConnection();
+        break;
+    }
+  }
+
+@override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
 
   void login() async {
     setState(() {
       _isLoading = true;
+      _diseableButton = true;
     });
     UserRequest userRequest = UserRequest();
 
@@ -111,6 +126,7 @@ class _LoginpageState extends State<Loginpage> {
     var response = await UserService.login(userRequest);
     if (response) {
       setState(() {
+        _diseableButton = false;
         _isLoading = false;
       });
       Navigator.push(
@@ -128,6 +144,7 @@ class _LoginpageState extends State<Loginpage> {
   void createAccount() async {
     setState(() {
       _isLoading = true;
+      _diseableButton = true;
     });
     UserCreateAccount account = UserCreateAccount(photo: '');
     account.email = emailController.text;
@@ -140,6 +157,7 @@ class _LoginpageState extends State<Loginpage> {
 
       setState(() {
         _isLoading = false;
+      _diseableButton = false;
         _isLoginForm = true;
       });
 
@@ -151,6 +169,28 @@ class _LoginpageState extends State<Loginpage> {
 
       _showDialog('Email já cadastrado', false, false);
     }
+  }
+
+  void _showDialogConnection() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return  AlertDialog(
+          title: const Text('Ops...'),
+          content: const Text('Voê está sem conexão com a internet'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Fechar',
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showDialog(String text, bool success, bool doLogin) {
@@ -297,7 +337,10 @@ class _LoginpageState extends State<Loginpage> {
             height: 55.0,
             child: TextButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                if(_diseableButton){
+                  null;
+                }
+                else if (_formKey.currentState!.validate()) {
                   login();
                 }
               },

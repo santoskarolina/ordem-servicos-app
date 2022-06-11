@@ -35,47 +35,13 @@ class _ServicesPage extends State<ServicesPage> {
       setState(() {
         getCLientes();
       });
-      _showMessage('Serviço deletado com sucesso', true, true);
+      _showMessage('Serviço deletado com sucesso', true);
     } else {
-      _showMessage('Não foi possível deletar este serviço', false, false);
+      _showMessage('Não foi possível deletar este serviço', false);
     }
   }
 
-  void _showDialog(int id) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: const Text(
-            "Deletar serviço?",
-          ),
-          content: const Text("Esta ação não poderá ser desfeita"),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                deletarServico(id);
-                Navigator.pop(context, true);
-              },
-              child: const Text(
-                'Sim',
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Não',
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showMessage(String text, bool action, bool goHome) {
+  void _showMessage(String text, bool action) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -85,10 +51,7 @@ class _ServicesPage extends State<ServicesPage> {
           content: Text(text),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                goHome
-                    ? Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage(title: 'Services ON')),)
-                    : Navigator.pop(context, true);
+              onPressed: () {Navigator.pop(context, true);
               },
               child: const Text('OK',),
             ),
@@ -131,14 +94,67 @@ Widget _loadingDialog() {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
                       Service resp = snapshot.data![index];
-                      return ListTile(
+                      return Card(
+                        elevation: 1,
+                        child: ListTile(
                         title: Text(resp.description,),
                         subtitle: Text("${resp.status.name}",),
                         leading: const CircleAvatar(
                           backgroundColor: Colors.blueAccent,
                           backgroundImage: AssetImage('assets/service.jpg'),
                         ),
-                        trailing: menu(resp.service_id),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                                    onPressed: () {
+                                       Navigator.push( context, MaterialPageRoute(builder: (context) => ServiceInfoPage(serviceId: resp.service_id,)));
+                                    },
+                                    icon: const Icon(Icons.info_rounded)
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          context: context,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                                          ),
+                                          builder: (BuildContext context) {
+                                            return SizedBox(
+                                              height: 200,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Text(
+                                                    'Você quer deletar este serviço?',
+                                                    style:
+                                                        TextStyle(fontSize: 20),
+                                                  ),
+                                                  const Padding(padding: EdgeInsets.only(top: 8.2),
+                                                  child: Text(
+                                                    'Esta ação não poderá ser desfeita.',
+                                                    style:
+                                                        TextStyle(fontSize: 17, color:  Colors.black54),
+                                                  )),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.center,
+                                                    children: [
+                                                      buttonCancel(context),
+                                                      buttonDelete(resp.service_id),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    icon: const Icon(Icons.delete)),
+                          ],
+                        ),
+                      ),
                       );
                     });
                 }else{
@@ -162,6 +178,55 @@ Widget _loadingDialog() {
         backgroundColor: const Color.fromRGBO(42,68,171, 1),
       ),
     );
+  }
+
+    Widget buttonDelete(int cliente) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 45.0, 0.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              deletarServico(cliente);
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(255, 0, 0, 120),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Sim',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
+  }
+
+   Widget buttonCancel(context) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Não',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
   }
 
    Widget _showContainer() {
@@ -201,31 +266,31 @@ Widget _loadingDialog() {
    );
   } 
 
-  Widget menu(int id) {
-    return PopupMenuButton<Menu>(
-        // Callback that sets the selected popup menu item.
-        onSelected: (Menu item) async {
-          setState(() {
-            switch (item) {
-              case Menu.deletar:
-                _showDialog(id);
-                break;
-              case Menu.atualizar:
-                Navigator.push( context, MaterialPageRoute(builder: (context) => ServiceInfoPage(serviceId: id,)),
-                );
-                break;
-            }
-          });
-        },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-              const PopupMenuItem(
-                value: Menu.deletar,
-                child: Text('Deletar'),
-              ),
-              const PopupMenuItem(
-                value: Menu.atualizar,
-                child: Text('Detalhes'),
-              ),
-            ]);
-  }
+  // Widget menu(int id) {
+  //   return PopupMenuButton<Menu>(
+  //       // Callback that sets the selected popup menu item.
+  //       onSelected: (Menu item) async {
+  //         setState(() {
+  //           switch (item) {
+  //             case Menu.deletar:
+  //               _showDialog(id);
+  //               break;
+  //             case Menu.atualizar:
+  //               Navigator.push( context, MaterialPageRoute(builder: (context) => ServiceInfoPage(serviceId: id,)),
+  //               );
+  //               break;
+  //           }
+  //         });
+  //       },
+  //       itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+  //             const PopupMenuItem(
+  //               value: Menu.deletar,
+  //               child: Text('Deletar'),
+  //             ),
+  //             const PopupMenuItem(
+  //               value: Menu.atualizar,
+  //               child: Text('Detalhes'),
+  //             ),
+  //           ]);
+  // }
 }

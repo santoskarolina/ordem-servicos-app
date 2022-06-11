@@ -27,18 +27,19 @@ class _CreateClient extends State<CreateClient> {
       isLoading = true;
     });
 
-    var response = await ClienteService.createCliente(nomeController.text, cpfController.text, telefoneController.text);
+    var response = await ClienteService.createCliente(
+        nomeController.text, cpfController.text, telefoneController.text);
     if (response.statusCode == 201) {
       setState(() {
         isLoading = false;
       });
       _showDialog();
-    } else if(response.statusCode == 400) {
+    } else if (response.statusCode == 400) {
       setState(() {
         isLoading = false;
       });
       _showDialogCPF();
-    }else{
+    } else {
       setState(() {
         isLoading = false;
       });
@@ -62,7 +63,9 @@ class _CreateClient extends State<CreateClient> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const HomePage(title: 'Services ON',)),
+                      builder: (context) => const HomePage(
+                            title: 'Services ON',
+                          )),
                 );
               },
               child: const Text(
@@ -129,12 +132,13 @@ class _CreateClient extends State<CreateClient> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text( 'Cadastrar cliente',
+          title: const Text(
+            'Cadastrar cliente',
             textAlign: TextAlign.center,
           ),
           actions: null,
           centerTitle: true,
-          backgroundColor:const Color.fromRGBO(42,68,171, 1),
+          backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
         ),
         body: SingleChildScrollView(
           child: Stack(
@@ -149,84 +153,126 @@ class _CreateClient extends State<CreateClient> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: TextFormField(
-        maxLines: 1,
-        maxLength: 100,
-        controller: nomeController,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: const InputDecoration(
-            hintText: 'Nome',
-            icon: Icon(
-              Icons.person,
-              color: Colors.grey,
-            )),
-        validator: (value) {
-          if(value!.isEmpty){
-            return 'Informe o nome';
-          }else if(value.length < 5){
-             return 'Informe um nome válido';
-          }
-          return null;
-        }
-      ),
+          maxLines: 1,
+          maxLength: 100,
+          controller: nomeController,
+          keyboardType: TextInputType.text,
+          autofocus: false,
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.black12,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide:  const BorderSide(color: Colors.black12 ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              hintText: 'Nome',
+              prefixIcon: const Icon(
+                Icons.person,
+                color: Colors.grey,
+              )
+            ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Informe o nome';
+            } else if (value.length < 5) {
+              return 'Informe um nome válido';
+            }
+            return null;
+          }),
     );
   }
 
   Widget showCpfinput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
-        maxLines: 1,
-        maxLength: 11,
-        controller: cpfController,
-        keyboardType: TextInputType.number,
-        autofocus: false,
-        decoration: const InputDecoration(
-            hintText: 'CPF',
-            icon: Icon(
-              Icons.person,
-              color: Colors.grey,
-            )),
-        validator: (value) {
-          if(value!.isEmpty){
-            return 'Informe o cpf';
-          }else if(value.length < 11){
-             return 'Informe um cpf válido';
-          }else if(value.length > 11) {
-            return 'Informe um cpf válido';
-          }
-          return null;
-        }
-      ),
+          maxLines: 1,
+          maxLength: 11,
+          controller: cpfController,
+          keyboardType: TextInputType.number,
+          autofocus: false,
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.black12,
+               enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide:  const BorderSide(color: Colors.black12 ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              hintText: 'CPF',
+              prefixIcon: const Icon(
+                Icons.person,
+                color: Colors.grey,
+              )
+            ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Informe o cpf';
+            } else if (value.length < 11) {
+              return 'Informe um cpf válido';
+            } else if (value.length > 11) {
+              return 'Informe um cpf válido';
+            }
+            return null;
+          }),
     );
   }
 
   Widget showPhoneInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
-        maxLines: 1,
-        maxLength: 25,
-        controller: telefoneController,
-        keyboardType: TextInputType.number,
-        autofocus: false,
-        decoration: const InputDecoration(
-            hintText: 'Telefone',
-            icon: Icon(
-              Icons.phone,
-              color: Colors.grey,
-            )),
-        validator: (value) {
-          if(value!.isEmpty){
-            return 'Informe o telefone';
-          }else if(value.length < 8){
-             return 'Informe um telefone válido';
-          }else if(value.length > 25) {
-            return 'Informe um telefone válido';
-          }
-          return null;
-        }
-      ),
+          maxLines: 1,
+          maxLength: 25,
+          controller: telefoneController,
+          keyboardType: TextInputType.number,
+          autofocus: false,
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.black12,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide:  const BorderSide(color: Colors.black12 ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              hintText: 'Telefone',
+              prefixIcon: const Icon(
+                Icons.phone,
+                color: Colors.grey,
+              )
+            ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Informe o telefone';
+            } else if (value.length < 8) {
+              return 'Informe um telefone válido';
+            } else if (value.length > 25) {
+              return 'Informe um telefone válido';
+            }
+            return null;
+          }),
     );
   }
 
@@ -242,7 +288,7 @@ class _CreateClient extends State<CreateClient> {
               }
             },
             style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(42,68,171, 1),
+                backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
                 fixedSize: const Size(390, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
@@ -263,7 +309,7 @@ class _CreateClient extends State<CreateClient> {
 
   Widget showCancelButton() {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+        padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
         child: SizedBox(
           height: 55.0,
           child: TextButton(

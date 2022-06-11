@@ -88,6 +88,21 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
     );
   }
 
+  Widget _loadingDialog() {
+    return AlertDialog(
+      content: Row(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: CircularProgressIndicator(),
+          ),
+          // const CircularProgressIndicator(),
+          const Text('Carregando...'),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,7 +130,7 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
-            return const CircularProgressIndicator();
+            return _loadingDialog();
           },
       )
       ),

@@ -133,23 +133,82 @@ class _CLientesPage extends State<CLientesPage> {
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
                         RespCliente resp = snapshot.data![index];
-                        return ListTile(
-                          leading: const CircleAvatar(
-                            backgroundColor: Colors.blueAccent,
-                            backgroundImage: AssetImage('assets/cliente.jpg'),
-                          ),
-                          title: Text(resp.name),
-                          onTap: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ClienteInfoPage(
-                                        clienteid: resp.client_id,
-                                      )),
+                        return Card(
+                          elevation: 1,
+                          child: ListTile(
+                            leading: const CircleAvatar(
+                              backgroundColor: Colors.blueAccent,
+                              backgroundImage: AssetImage('assets/cliente.jpg'),
                             ),
-                          },
-                          subtitle: Text("Telefone: ${resp.cell_phone}"),
-                          trailing: menu(resp),
+                            title: Text(resp.name),
+                            onTap: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ClienteInfoPage(
+                                          clienteid: resp.client_id,
+                                        )),
+                              ),
+                            },
+                            subtitle: Text("Telefone: ${resp.cell_phone}"),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ClienteInfoPage(
+                                                  clienteid: resp.client_id,
+                                                )),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.person)),
+                                IconButton(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          context: context,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                                          ),
+                                          builder: (BuildContext context) {
+                                            return SizedBox(
+                                              height: 200,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Text(
+                                                    'Você quer deletar este cliente?',
+                                                    style:
+                                                        TextStyle(fontSize: 20),
+                                                  ),
+                                                  const Padding(padding: EdgeInsets.only(top: 8.2),
+                                                  child: Text(
+                                                    'Esta ação não poderá ser desfeita.',
+                                                    style:
+                                                        TextStyle(fontSize: 17, color:  Colors.black54),
+                                                  )),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.center,
+                                                    children: [
+                                                      buttonCancel(context),
+                                                      buttonDelete(resp),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    icon: const Icon(Icons.delete)),
+                              ],
+                            ),
+                          ),
                         );
                       });
                 } else {
@@ -183,6 +242,55 @@ class _CLientesPage extends State<CLientesPage> {
         children: [textNoData(), circleImage()],
       ),
     );
+  }
+
+  Widget buttonDelete(RespCliente cliente) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 45.0, 0.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              deletarCliente(cliente);
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(255, 0, 0, 120),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Sim',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
+  }
+
+  Widget buttonCancel(context) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Não',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
   }
 
   Widget textNoData() {

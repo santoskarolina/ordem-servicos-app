@@ -93,7 +93,6 @@ class _CreateService extends State<CreateService> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
         return AlertDialog(
           title: success ? const Text('Sucesso!') : const Text('Que pena!'),
           content: Text(text),
@@ -102,15 +101,10 @@ class _CreateService extends State<CreateService> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const HomePage(
-                            title: 'Meus serviços',
-                          )),
+                  MaterialPageRoute(builder: (context) => const HomePage(title: 'Meus serviços',)),
                 );
               },
-              child: const Text(
-                'OK',
-              ),
+              child: const Text('OK',),
             ),
           ],
         );
@@ -143,26 +137,26 @@ class _CreateService extends State<CreateService> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: TextFormField(
-        maxLines: 1,
-        controller: descController,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: const InputDecoration(
-            hintText: 'Descrição',
-            icon: Icon(
-              Icons.description,
-              color: Colors.grey,
-            )),
-        // validator: (value) => value!.isEmpty ? 'Informe a descrição' : null,
-        validator: (value) {
-          if(value!.isEmpty){
-            return 'Informe a descrição';
-          }else if(value.length < 10){
-             return 'Descreva mais sobre o serviço';
-          }
-          return null;
-        }
-      ),
+          maxLines: 1,
+          maxLength: 200,
+          controller: descController,
+          keyboardType: TextInputType.text,
+          autofocus: false,
+          decoration: const InputDecoration(
+              hintText: 'Descrição',
+              icon: Icon(
+                Icons.description,
+                color: Colors.grey,
+              )),
+          // validator: (value) => value!.isEmpty ? 'Informe a descrição' : null,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Informe a descrição';
+            } else if (value.length < 10) {
+              return 'Descreva mais sobre o serviço';
+            }
+            return null;
+          }),
     );
   }
 

@@ -33,3 +33,10 @@ class UserResponse {
         'photo': photo,
     };
 }
+
+class Photo{
+  String? img;
+  String? name;
+
+   Photo({this.img, this.name});
+}

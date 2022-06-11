@@ -149,12 +149,27 @@ class _EditClient extends State<EditClient> {
         controller: nomeController,
         keyboardType: TextInputType.text,
         autofocus: false,
-        decoration: const InputDecoration(
-            hintText: 'Nome',
-            icon: Icon(
-              Icons.person,
-              color: Colors.grey,
-            )),
+        decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.black12,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide:  const BorderSide(color: Colors.black12 ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              hintText: 'Nome',
+              prefixIcon: const Icon(
+                Icons.person,
+                color: Colors.grey,
+              )
+            ),
         validator: (value) => value!.isEmpty ? 'Informe o nome' : null,
       ),
     );
@@ -162,18 +177,33 @@ class _EditClient extends State<EditClient> {
 
   Widget showCpfinput(response) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
         maxLines: 1,
         controller: cpfController,
         keyboardType: TextInputType.number,
         autofocus: false,
-        decoration: const InputDecoration(
-            hintText: 'CPF',
-            icon: Icon(
-              Icons.person,
-              color: Colors.grey,
-            )),
+        decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.black12,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide:  const BorderSide(color: Colors.black12 ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              hintText: 'CPF',
+              prefixIcon: const Icon(
+                Icons.phone,
+                color: Colors.grey,
+              )
+            ),
         validator: (value) => value!.isEmpty ? 'Informe o CPF' : null,
       ),
     );
@@ -181,18 +211,33 @@ class _EditClient extends State<EditClient> {
 
   Widget showPhoneInput(response) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
         maxLines: 1,
         controller: telefoneController,
         keyboardType: TextInputType.number,
         autofocus: false,
-        decoration: const InputDecoration(
-            hintText: 'Telefone',
-            icon: Icon(
-              Icons.phone,
-              color: Colors.grey,
-            )),
+        decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.black12,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide:  const BorderSide(color: Colors.black12 ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              hintText: 'Telefone',
+              prefixIcon: const Icon(
+                Icons.phone,
+                color: Colors.grey,
+              )
+            ),
         validator: (value) => value!.isEmpty ? 'Informe o telefone' : null,
       ),
     );
@@ -229,7 +274,7 @@ class _EditClient extends State<EditClient> {
 
   Widget showCancelButton() {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+        padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
         child: SizedBox(
           height: 55.0,
           child: TextButton(
