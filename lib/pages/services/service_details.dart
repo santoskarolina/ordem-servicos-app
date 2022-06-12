@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../api/services_api.dart';
 import '../../models/services_model.dart';
+import '../initial/home_page.dart';
 
 class ServiceInfoPage extends StatefulWidget {
   final int serviceId;
@@ -34,6 +35,85 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
   void initState() {
     super.initState();
     getService();
+  }
+
+  void deletarServico(int id) async {
+    var response = await ServicesService.deletarService(id);
+    if (response.statusCode == 200) {
+      message(
+          'Serviço deletado com sucesso', 'Volte para página principal', true);
+    } else {
+      message('Não foi possível deletar este serviço',
+          'Tente novamente mais tarde', false);
+    }
+  }
+
+  void message(String title, String subtitle, bool goHome) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(top: 8.2),
+                    child: Text(
+                      subtitle,
+                      style:
+                          const TextStyle(fontSize: 17, color: Colors.black54),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    genericButton(context, goHome),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  Widget genericButton(context, goHome) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              goHome
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomePage(
+                                title: 'Services ON',
+                              )),
+                    )
+                  : Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Certo',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
   }
 
   Widget _loadingDialog() {
@@ -166,7 +246,7 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
       child: SizedBox(
         height: 55.0,
         child: TextButton(
-          onPressed: () => {Navigator.pop(context)},
+          onPressed: () => {_showDialog(snapshot.service_id)},
           style: TextButton.styleFrom(
               backgroundColor: Colors.red[700],
               fixedSize: const Size(150, 100),
@@ -206,5 +286,90 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
         children: [circleImage(), _showCard(resp), actionsButton(resp)],
       ),
     );
+  }
+
+  void _showDialog(id) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Você quer deletar este serviço?',
+                  style: TextStyle(fontSize: 20),
+                ),
+                const Padding(
+                    padding: EdgeInsets.only(top: 8.2),
+                    child: Text(
+                      'Esta ação não poderá ser desfeita.',
+                      style: TextStyle(fontSize: 17, color: Colors.black54),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buttonCancel(context),
+                    buttonDelete(id),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  Widget buttonCancel(context) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Não',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
+  }
+
+  Widget buttonDelete(int cliente) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 45.0, 0.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              deletarServico(cliente);
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(255, 0, 0, 120),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Sim',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
   }
 }

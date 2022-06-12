@@ -16,85 +16,189 @@ class ClienteInfoPage extends StatefulWidget {
 class _ClienteInfoPageState extends State<ClienteInfoPage> {
   late Future<IRespCliente> _cliente;
 
+  late bool loadingDelete;
+
   void getCliente() {
     setState(() {
       _cliente = ClienteService.getClientById(widget.clienteid);
+      loadingDelete = false;
     });
   }
 
   void deletarCliente(int cliente) async {
     var response = await ClienteService.deletarCliente(cliente);
     if (response.statusCode == 500) {
-      _showDialog('Cliente não pode ser deletado', false, false);
+      message('Cliente não pode ser deletado', 'Ele possui serviços', false);
     } else if (response.statusCode == 200) {
-      _showDialog('Cliente deletado com sucesso', true, true);
+      message('Cliente deletado com sucesso', 'Volte para tela inicial', true);
     }
   }
 
   @override
   void initState() {
+    loadingDelete = false;
     super.initState();
     getCliente();
   }
 
-  void _showDialogDeleteClient(int cliente) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Deletar cliente?'),
-          content: const Text(
-            "Esta ação não poderá ser desfeita",
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                deletarCliente(cliente);
-                Navigator.pop(context, true);
-              },
-              child: const Text(
-                'Sim',
-              ),
+  void message(String title, String subtitle, bool goHome) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(top: 8.2),
+                    child: Text(
+                      subtitle,
+                      style:
+                          const TextStyle(fontSize: 17, color: Colors.black54),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    genericButton(context, goHome),
+                  ],
+                )
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Não',
-              ),
-            ),
-          ],
-        );
-      },
-    );
+          );
+        });
   }
 
-  void _showDialog(String text, bool sucesso, bool goHome) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(sucesso ? 'Sucesso!' : 'Oopss'),
-          content: Text(text),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                goHome
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const HomePage(title: 'Services ON')),
-                      )
-                    : Navigator.pop(context, true);
-              },
-              child: const Text('OK'),
+  Widget genericButton(context, goHome) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              goHome
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomePage(
+                                title: 'Services ON',
+                              )),
+                    )
+                  : Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Certo',
+              style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-          ],
-        );
-      },
-    );
+          ),
+        ));
+  }
+
+  void _showDialog(id) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Você quer deletar este cliente?',
+                  style: TextStyle(fontSize: 20),
+                ),
+                const Padding(
+                    padding: EdgeInsets.only(top: 8.2),
+                    child: Text(
+                      'Esta ação não poderá ser desfeita.',
+                      style: TextStyle(fontSize: 17, color: Colors.black54),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buttonCancel(context),
+                    buttonDelete(id),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  Widget buttonCancel(context) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              setState(() {
+                loadingDelete = false;
+                print(loadingDelete);
+              });
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Não',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
+  }
+
+  Widget buttonDelete(int cliente) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 45.0, 0.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              setState(() {
+                loadingDelete = true;
+              });
+              deletarCliente(cliente);
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(255, 0, 0, 120),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Sim',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
   }
 
   Widget _loadingDialog() {
@@ -218,7 +322,7 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
         height: 55.0,
         child: TextButton(
           onPressed: () {
-            _showDialogDeleteClient(snapshot.data!.client_id);
+            _showDialog(snapshot.data!.client_id);
           },
           style: TextButton.styleFrom(
               backgroundColor: Colors.red[700],

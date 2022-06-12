@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/api/cliente_api.dart';
 import 'package:flutter_application_1/models/client_model.dart';
 import 'package:flutter_application_1/pages/clients/user_info_page.dart';
-import '../../models/menu_enum.dart';
 import 'create_cliente_page.dart';
 
 class CLientesPage extends StatefulWidget {
@@ -33,72 +32,74 @@ class _CLientesPage extends State<CLientesPage> {
   void deletarCliente(RespCliente cliente) async {
     var delete = await ClienteService.deletarCliente(cliente.client_id);
     if (delete.statusCode == 500) {
-      _showMessage('Não foi possível deletar este cliente', false);
+      message('Não foi possível deletar este cliente',
+          'Tente novamente mais tarde');
     } else {
       setState(() {
         getClientes();
       });
-      _showMessage('Cliente deletado com sucesso', true);
+      message('Cliente deletado com sucesso', 'Volte para página inicial');
     }
   }
 
-  void _showDialog(RespCliente cliente) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: const Text('Deletar cliente?'),
-          content: const Text(
-            "Esta ação não poderá ser desfeita",
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                deletarCliente(cliente);
-                Navigator.pop(context, true);
-              },
-              child: const Text(
-                'Sim',
-              ),
+  void message(String title, String subtitle) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(top: 8.2),
+                    child: Text(
+                      subtitle,
+                      style:
+                          const TextStyle(fontSize: 17, color: Colors.black54),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    genericButton(context),
+                  ],
+                )
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Não',
-              ),
-            ),
-          ],
-        );
-      },
-    );
+          );
+        });
   }
 
-  void _showMessage(String text, bool sucesso) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: Text(sucesso ? 'Sucesso' : 'Oopsss'),
-          content: Text(
-            text,
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-              child: const Text(
-                'OK',
-              ),
+  Widget genericButton(context) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Certo',
+              style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-          ],
-        );
-      },
-    );
+          ),
+        ));
   }
 
   Widget _loadingDialog() {
@@ -114,6 +115,42 @@ class _CLientesPage extends State<CLientesPage> {
         ],
       ),
     );
+  }
+
+  void _showDialog(resp) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Você quer deletar este cliente?',
+                  style: TextStyle(fontSize: 20),
+                ),
+                const Padding(
+                    padding: EdgeInsets.only(top: 8.2),
+                    child: Text(
+                      'Esta ação não poderá ser desfeita.',
+                      style: TextStyle(fontSize: 17, color: Colors.black54),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buttonCancel(context),
+                    buttonDelete(resp),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
   }
 
   @override
@@ -172,48 +209,7 @@ class _CLientesPage extends State<CLientesPage> {
                                     icon: const Icon(Icons.person)),
                                 IconButton(
                                     onPressed: () {
-                                      showModalBottomSheet(
-                                          context: context,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(20.0)),
-                                          ),
-                                          builder: (BuildContext context) {
-                                            return SizedBox(
-                                              height: 200,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Text(
-                                                    'Você quer deletar este cliente?',
-                                                    style:
-                                                        TextStyle(fontSize: 20),
-                                                  ),
-                                                  const Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 8.2),
-                                                      child: Text(
-                                                        'Esta ação não poderá ser desfeita.',
-                                                        style: TextStyle(
-                                                            fontSize: 17,
-                                                            color:
-                                                                Colors.black54),
-                                                      )),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      buttonCancel(context),
-                                                      buttonDelete(resp),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          });
+                                      _showDialog(resp);
                                     },
                                     icon: const Icon(Icons.delete)),
                               ],
@@ -331,38 +327,5 @@ class _CLientesPage extends State<CLientesPage> {
                 ))),
       ),
     );
-  }
-
-  Widget menu(RespCliente cliente) {
-    return PopupMenuButton<Menu>(
-        // Callback that sets the selected popup menu item.
-        onSelected: (Menu item) async {
-          setState(() {
-            switch (item) {
-              case Menu.deletar:
-                _showDialog(cliente);
-                break;
-              case Menu.atualizar:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ClienteInfoPage(
-                            clienteid: cliente.client_id,
-                          )),
-                );
-                break;
-            }
-          });
-        },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-              const PopupMenuItem(
-                value: Menu.deletar,
-                child: Text('Deletar'),
-              ),
-              const PopupMenuItem(
-                value: Menu.atualizar,
-                child: Text('Detalhes'),
-              ),
-            ]);
   }
 }

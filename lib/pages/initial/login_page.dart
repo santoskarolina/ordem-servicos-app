@@ -177,6 +177,12 @@ class _LoginpageState extends State<Loginpage> {
       });
 
       _showDialog('Email já cadastrado', 'Utilize outro email', false, false);
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      _showDialog('Não foi possível criar sua conta',
+          'Tente novamente mais tarde', false, false);
     }
   }
 

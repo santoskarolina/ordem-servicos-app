@@ -10,6 +10,7 @@ import '../initial/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'dart:ui';
 
 class EditService extends StatefulWidget {
   final int serviceId;
@@ -47,7 +48,7 @@ class _EditService extends State<EditService> {
       _service = resBody;
       descController.text = _service["description"];
       priceController.text = _service["price"];
-      closingDateController.text = _service["closing_date"];
+      closingDateController.text = _service["closing_date"] ?? '';
       var client = _service["client"];
       _mySelection = client["client_id"];
 

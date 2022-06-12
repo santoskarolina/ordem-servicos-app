@@ -321,6 +321,26 @@ class _CreateService extends State<CreateService> {
         iconSize: 15,
         hint: const Text('Cliente'),
         elevation: 16,
+        decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.grey[100],
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: const BorderSide(color: Colors.black12),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+            ),
+            hintText: 'Valor',
+            prefixIcon: const Icon(
+              Icons.person,
+              color: Colors.grey,
+            )),
         items: items,
         value: _mySelection,
         validator: (value) => value == null ? 'informe o cliente' : null,
@@ -347,6 +367,7 @@ class _CreateService extends State<CreateService> {
                   children: <Widget>[
                     showDescriptioninput(),
                     showPriceInput(),
+                    selectUser(),
                     showPrimaryButton(),
                     showCancelButton(),
                   ],
