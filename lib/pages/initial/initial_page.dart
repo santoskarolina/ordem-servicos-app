@@ -57,14 +57,14 @@ class InitialPage extends StatelessWidget {
               );
             },
             style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+                backgroundColor: Colors.blueGrey,
                 fixedSize: const Size(290, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(36),
+                  borderRadius: BorderRadius.circular(20),
                 )),
             child: const Text(
-              'LOGIN',
+              'Login',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
@@ -85,14 +85,14 @@ class InitialPage extends StatelessWidget {
               );
             },
             style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+                backgroundColor: Colors.blue[500],
                 fixedSize: const Size(290, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(36),
+                  borderRadius: BorderRadius.circular(20),
                 )),
             child: const Text(
-              'CRIAR CONTA',
+              'Criar conta',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),

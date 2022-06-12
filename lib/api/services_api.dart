@@ -7,18 +7,18 @@ import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:shared_preferences/shared_preferences.dart';
-class ServicesService {
 
+class ServicesService {
   Future<List<Service>> get() async {
     var url = Uri.parse('${GlobalApi.url}/servicos');
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-     String? token = prefs.getString('access_token');
+    String? token = prefs.getString('access_token');
 
     http.Response response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
     });
-    
+
     return decode(response);
   }
 
@@ -46,7 +46,7 @@ class ServicesService {
     };
 
     final response = await http.delete(
-     url,
+      url,
       headers: headers,
     );
 
@@ -73,12 +73,11 @@ class ServicesService {
       var service = RespService.fromJson(jsonDecode(response.body));
       return service;
     } else {
-      print('ailed to load service: ${response.statusCode}');
-      throw Exception('Failed to load service');
+      throw Exception('Failed to load service:${response.statusCode}');
     }
   }
 
-static Future<Response> createService(ServiceCreate service) async {
+  static Future<Response> createService(ServiceCreate service) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('access_token');
 
@@ -89,13 +88,37 @@ static Future<Response> createService(ServiceCreate service) async {
 
     var body = jsonEncode(service);
 
-     var url = Uri.parse('${GlobalApi.url}/servicos');
+    var url = Uri.parse('${GlobalApi.url}/servicos');
     var response2 = await http.post(
       url,
       headers: headers,
       body: body,
     );
     final response = response2;
+
+    return response;
+  }
+
+  static Future<Response> updateService(int id, RespService bodyRequest) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('access_token');
+
+    var headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.authorizationHeader: 'Bearer $token',
+    };
+
+    var json = jsonEncode(bodyRequest);
+    var body = json;
+
+    var requeste = await http.put(
+      Uri.parse('${GlobalApi.url}/servicos/$id'),
+      headers: headers,
+      body: body,
+    );
+
+    final response = requeste;
+    print(response.body);
 
     return response;
   }

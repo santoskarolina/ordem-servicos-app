@@ -29,6 +29,7 @@ class UserService {
   }
 
   static Future<Response> createAccount(UserCreateAccount user) async {
+    user.photo = 'https://services-on.netlify.app/assets/user-default.png';
     var url = Uri.parse('${GlobalApi.url}/user');
     var response2 = await http.post(
       url,

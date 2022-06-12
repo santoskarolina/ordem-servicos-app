@@ -43,21 +43,33 @@ class Status {
       code: json['code'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'status_id': status_id,
+        'name': name.toString(),
+        'code': code,
+      };
 }
 
 class RespService {
-  final int service_id;
-  final String description;
-  final RespCliente client;
-  final Status status;
-  final String price;
-  final String opening_date;
-  final String? closing_date;
+  int? service_id;
+  String? description;
+  RespCliente? client;
+  Status? status;
+  dynamic price;
+  dynamic opening_date;
+  dynamic closing_date;
 
-  RespService(this.service_id, this.description, this.status, this.closing_date,
-      this.client, this.opening_date, this.price);
+  RespService(
+      {this.service_id,
+      this.description,
+      this.status,
+      this.closing_date,
+      this.client,
+      this.opening_date,
+      this.price});
 
-  RespService.fromJson(Map<String, dynamic> json)
+  RespService.fromJson(Map<dynamic, dynamic> json)
       : service_id = json["service_id"],
         description = json["description"],
         status = Status.fromJson(json['status']),
@@ -65,6 +77,20 @@ class RespService {
         price = json["price"],
         closing_date = json["closing_date"],
         opening_date = json["opening_date"];
+
+  Map toJson() {
+    Map<dynamic, dynamic> client = this.client!.toJson();
+    Map<dynamic, dynamic> status = this.status!.toJson();
+    Map<dynamic, dynamic> service = {
+      'price': price.toInt(),
+      'description': description.toString(),
+      'client': client,
+      'status': status,
+      'closing_date': closing_date,
+      'opening_date': opening_date.toString(),
+    };
+    return service;
+  }
 }
 
 class ServiceCreate {
@@ -75,8 +101,7 @@ class ServiceCreate {
   ServiceCreate({this.description, this.price, this.client});
 
   Map toJson() {
-    // Map<String, dynamic>? client = this.client != null ? this.client!.toJson() : null;
-    Map<String, dynamic> client =  this.client!.toJson();
+    Map<String, dynamic> client = this.client!.toJson();
     Map<String, dynamic> service = {
       'price': price?.toInt(),
       'description': description.toString(),

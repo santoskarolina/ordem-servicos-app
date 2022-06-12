@@ -4,7 +4,11 @@ class Cliente {
   String? cpf;
   final String cell_phone;
 
-  Cliente({required this.client_id,required this.name, this.cpf, required this.cell_phone});
+  Cliente(
+      {required this.client_id,
+      required this.name,
+      this.cpf,
+      required this.cell_phone});
 
   factory Cliente.fromJson(Map<String, dynamic> json) {
     return Cliente(
@@ -18,17 +22,17 @@ class Cliente {
         'name': name,
         'cpf': cpf,
         'cell_phone': cell_phone,
-    };
+      };
 }
-
 
 class RespCliente {
   final int client_id;
   final String name;
   final String cell_phone;
 
-  RespCliente({required this.client_id, required this.name, required this.cell_phone});
-  
+  RespCliente(
+      {required this.client_id, required this.name, required this.cell_phone});
+
   RespCliente.noData(this.client_id, this.name, this.cell_phone);
 
   factory RespCliente.fromJson(Map<String, dynamic> json) {
@@ -43,16 +47,16 @@ class RespCliente {
         'client_id': client_id,
         'name': name.toString(),
         'cell_phone': cell_phone.toString(),
-    };
+      };
 }
 
 class IRespCliente {
-   int? client_id;
-    String? name;
-   String? cell_phone;
-   String? cpf;
+  int? client_id;
+  String? name;
+  String? cell_phone;
+  String? cpf;
 
-   IRespCliente({this.client_id, this.name, this.cell_phone, this.cpf});
+  IRespCliente({this.client_id, this.name, this.cell_phone, this.cpf});
 
   factory IRespCliente.fromJson(Map<String, dynamic> json) {
     return IRespCliente(

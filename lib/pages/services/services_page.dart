@@ -47,13 +47,18 @@ class _ServicesPage extends State<ServicesPage> {
       builder: (BuildContext context) {
         // retorna um objeto do tipo Dialog
         return AlertDialog(
-          title: Text(action ? 'Sucesso' : 'Oopss',),
+          title: Text(
+            action ? 'Sucesso' : 'Oopss',
+          ),
           content: Text(text),
           actions: <Widget>[
             TextButton(
-              onPressed: () {Navigator.pop(context, true);
+              onPressed: () {
+                Navigator.pop(context, true);
               },
-              child: const Text('OK',),
+              child: const Text(
+                'OK',
+              ),
             ),
           ],
         );
@@ -61,8 +66,7 @@ class _ServicesPage extends State<ServicesPage> {
     );
   }
 
-
-Widget _loadingDialog() {
+  Widget _loadingDialog() {
     return AlertDialog(
       content: Row(
         children: [
@@ -71,7 +75,7 @@ Widget _loadingDialog() {
             child: CircularProgressIndicator(),
           ),
           // const CircularProgressIndicator(),
-          const Text('Processando...'),
+          const Text('Carregando...'),
         ],
       ),
     );
@@ -88,36 +92,46 @@ Widget _loadingDialog() {
             future: _services,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                if(snapshot.data!.isNotEmpty){
-                return ListView.builder(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      Service resp = snapshot.data![index];
-                      return Card(
-                        elevation: 1,
-                        child: ListTile(
-                        title: Text(resp.description,),
-                        subtitle: Text("${resp.status.name}",),
-                        leading: const CircleAvatar(
-                          backgroundColor: Colors.blueAccent,
-                          backgroundImage: AssetImage('assets/service.jpg'),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
+                if (snapshot.data!.isNotEmpty) {
+                  return ListView.builder(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Service resp = snapshot.data![index];
+                        return Card(
+                          elevation: 1,
+                          child: ListTile(
+                            title: Text(
+                              resp.description,
+                            ),
+                            subtitle: Text(
+                              "${resp.status.name}",
+                            ),
+                            leading: const CircleAvatar(
+                              backgroundColor: Colors.blueAccent,
+                              backgroundImage: AssetImage('assets/service.jpg'),
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
                                     onPressed: () {
-                                       Navigator.push( context, MaterialPageRoute(builder: (context) => ServiceInfoPage(serviceId: resp.service_id,)));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ServiceInfoPage(
+                                                    serviceId: resp.service_id,
+                                                  )));
                                     },
-                                    icon: const Icon(Icons.info_rounded)
-                                ),
+                                    icon: const Icon(Icons.info_rounded)),
                                 IconButton(
                                     onPressed: () {
                                       showModalBottomSheet(
                                           context: context,
                                           shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20.0)),
                                           ),
                                           builder: (BuildContext context) {
                                             return SizedBox(
@@ -132,18 +146,24 @@ Widget _loadingDialog() {
                                                     style:
                                                         TextStyle(fontSize: 20),
                                                   ),
-                                                  const Padding(padding: EdgeInsets.only(top: 8.2),
-                                                  child: Text(
-                                                    'Esta ação não poderá ser desfeita.',
-                                                    style:
-                                                        TextStyle(fontSize: 17, color:  Colors.black54),
-                                                  )),
+                                                  const Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 8.2),
+                                                      child: Text(
+                                                        'Esta ação não poderá ser desfeita.',
+                                                        style: TextStyle(
+                                                            fontSize: 17,
+                                                            color:
+                                                                Colors.black54),
+                                                      )),
                                                   Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       buttonCancel(context),
-                                                      buttonDelete(resp.service_id),
+                                                      buttonDelete(
+                                                          resp.service_id),
                                                     ],
                                                   )
                                                 ],
@@ -152,15 +172,15 @@ Widget _loadingDialog() {
                                           });
                                     },
                                     icon: const Icon(Icons.delete)),
-                          ],
-                        ),
-                      ),
-                      );
-                    });
-                }else{
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+                } else {
                   return _showContainer();
                 }
-              }else if (snapshot.hasError) {
+              } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
               return _loadingDialog();
@@ -175,12 +195,12 @@ Widget _loadingDialog() {
         },
         tooltip: 'Adicionar serviço',
         child: const Icon(Icons.add),
-        backgroundColor: const Color.fromRGBO(42,68,171, 1),
+        backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
       ),
     );
   }
 
-    Widget buttonDelete(int cliente) {
+  Widget buttonDelete(int cliente) {
     return Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 45.0, 0.0, 0.0),
         child: SizedBox(
@@ -205,7 +225,7 @@ Widget _loadingDialog() {
         ));
   }
 
-   Widget buttonCancel(context) {
+  Widget buttonCancel(context) {
     return Padding(
         padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
         child: SizedBox(
@@ -229,7 +249,7 @@ Widget _loadingDialog() {
         ));
   }
 
-   Widget _showContainer() {
+  Widget _showContainer() {
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.all(16.0),
@@ -245,26 +265,29 @@ Widget _loadingDialog() {
       child: Text(
         'Sem serviços cadastrados',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 30, color: Color.fromARGB(255, 103, 101, 101), ),
+        style: TextStyle(
+          fontSize: 30,
+          color: Color.fromARGB(255, 103, 101, 101),
+        ),
       ),
     );
   }
 
   Widget circleImage() {
     return Center(
-      child : Container(
-      width: 200.0,
-      height: 200.0,
-      decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/nodata.png',)
-            )
-        ),
-     ),
-   );
-  } 
+      child: Container(
+        width: 200.0,
+        height: 200.0,
+        decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage(
+                  'assets/nodata.png',
+                ))),
+      ),
+    );
+  }
 
   // Widget menu(int id) {
   //   return PopupMenuButton<Menu>(

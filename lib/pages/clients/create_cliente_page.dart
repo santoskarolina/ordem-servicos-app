@@ -33,99 +33,88 @@ class _CreateClient extends State<CreateClient> {
       setState(() {
         isLoading = false;
       });
-      _showDialog();
+      _showDialog('Cliente cadastrado com sucesso',
+          'Acesse a pagina de clientes', true);
     } else if (response.statusCode == 400) {
       setState(() {
         isLoading = false;
       });
-      _showDialogCPF();
+      _showDialog('CPF já cadastrado', 'Utilize outro cpf', false);
     } else {
       setState(() {
         isLoading = false;
       });
-      _showDialogFail();
+      _showDialog('Não foi possível cadastrar este cliente',
+          'Tente novamente mais tarde', true);
     }
   }
 
-  void _showDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: const Text('Sucesso!'),
-          content: const Text(
-            "Cliente cadastrado com sucesso!",
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const HomePage(
-                            title: 'Services ON',
-                          )),
-                );
-              },
-              child: const Text(
-                'OK',
-              ),
+  void _showDialog(String title, String subtitle, bool goHome) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(top: 8.2),
+                    child: Text(
+                      subtitle,
+                      style:
+                          const TextStyle(fontSize: 17, color: Colors.black54),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    genericButton(context, goHome),
+                  ],
+                )
+              ],
             ),
-          ],
-        );
-      },
-    );
+          );
+        });
   }
 
-  void _showDialogFail() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: const Text('Falha!'),
-          content: const Text(
-            "Não foi possível salvar este cliente",
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'OK',
-              ),
+  Widget genericButton(context, goHome) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              goHome
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomePage(
+                                title: 'Services ON',
+                              )),
+                    )
+                  : Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Certo',
+              style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDialogCPF() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: const Text('Aviso!'),
-          content: const Text(
-            "CPF já registrado.",
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'OK',
-              ),
-            ),
-          ],
-        );
-      },
-    );
+        ));
   }
 
   @override
@@ -149,7 +138,7 @@ class _CreateClient extends State<CreateClient> {
         ));
   }
 
-  Widget showNameinput() {
+  Widget nameFormField() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: TextFormField(
@@ -160,10 +149,10 @@ class _CreateClient extends State<CreateClient> {
           autofocus: false,
           decoration: InputDecoration(
               filled: true,
-              fillColor: Colors.black12,
+              fillColor: Colors.grey[100],
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
-                borderSide:  const BorderSide(color: Colors.black12 ),
+                borderSide: const BorderSide(color: Colors.black12),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -177,8 +166,7 @@ class _CreateClient extends State<CreateClient> {
               prefixIcon: const Icon(
                 Icons.person,
                 color: Colors.grey,
-              )
-            ),
+              )),
           validator: (value) {
             if (value!.isEmpty) {
               return 'Informe o nome';
@@ -190,7 +178,7 @@ class _CreateClient extends State<CreateClient> {
     );
   }
 
-  Widget showCpfinput() {
+  Widget cpfFormField() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
@@ -201,10 +189,10 @@ class _CreateClient extends State<CreateClient> {
           autofocus: false,
           decoration: InputDecoration(
               filled: true,
-              fillColor: Colors.black12,
-               enabledBorder: OutlineInputBorder(
+              fillColor: Colors.grey[100],
+              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
-                borderSide:  const BorderSide(color: Colors.black12 ),
+                borderSide: const BorderSide(color: Colors.black12),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -218,8 +206,7 @@ class _CreateClient extends State<CreateClient> {
               prefixIcon: const Icon(
                 Icons.person,
                 color: Colors.grey,
-              )
-            ),
+              )),
           validator: (value) {
             if (value!.isEmpty) {
               return 'Informe o cpf';
@@ -233,7 +220,7 @@ class _CreateClient extends State<CreateClient> {
     );
   }
 
-  Widget showPhoneInput() {
+  Widget phoneFormField() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
@@ -244,10 +231,10 @@ class _CreateClient extends State<CreateClient> {
           autofocus: false,
           decoration: InputDecoration(
               filled: true,
-              fillColor: Colors.black12,
+              fillColor: Colors.grey[100],
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
-                borderSide:  const BorderSide(color: Colors.black12 ),
+                borderSide: const BorderSide(color: Colors.black12),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -261,8 +248,7 @@ class _CreateClient extends State<CreateClient> {
               prefixIcon: const Icon(
                 Icons.phone,
                 color: Colors.grey,
-              )
-            ),
+              )),
           validator: (value) {
             if (value!.isEmpty) {
               return 'Informe o telefone';
@@ -276,7 +262,7 @@ class _CreateClient extends State<CreateClient> {
     );
   }
 
-  Widget showPrimaryButton() {
+  Widget confirmButton() {
     return Padding(
         padding: const EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
         child: SizedBox(
@@ -290,9 +276,9 @@ class _CreateClient extends State<CreateClient> {
             style: TextButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
                 fixedSize: const Size(390, 100),
-                primary: Colors.blue[600],
+                primary: Colors.blue[500],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                 )),
             child: isLoading
                 ? const Center(
@@ -307,9 +293,9 @@ class _CreateClient extends State<CreateClient> {
         ));
   }
 
-  Widget showCancelButton() {
+  Widget cancelButton() {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
         child: SizedBox(
           height: 55.0,
           child: TextButton(
@@ -317,11 +303,11 @@ class _CreateClient extends State<CreateClient> {
               Navigator.pop(context),
             },
             style: TextButton.styleFrom(
-                backgroundColor: Colors.red[700],
+                backgroundColor: Colors.red[500],
                 fixedSize: const Size(390, 100),
-                primary: Colors.blue[600],
+                primary: Colors.red[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                 )),
             child: const Text(
               'Cancelar',
@@ -333,19 +319,24 @@ class _CreateClient extends State<CreateClient> {
 
   Widget _showForm() {
     return Container(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              showNameinput(),
-              showCpfinput(),
-              showPhoneInput(),
-              showPrimaryButton(),
-              showCancelButton(),
-            ],
-          ),
-        ));
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+            elevation: 6,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10.1, 10.0, 10.0, 10.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    nameFormField(),
+                    cpfFormField(),
+                    phoneFormField(),
+                    confirmButton(),
+                    cancelButton(),
+                  ],
+                ),
+              ),
+            )));
   }
 }

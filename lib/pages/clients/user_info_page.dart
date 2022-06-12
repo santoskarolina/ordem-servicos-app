@@ -43,7 +43,9 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Deletar cliente?'),
-          content: const Text("Esta ação não poderá ser desfeita",),
+          content: const Text(
+            "Esta ação não poderá ser desfeita",
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -58,7 +60,9 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Não',),
+              child: const Text(
+                'Não',
+              ),
             ),
           ],
         );
@@ -77,7 +81,12 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
             TextButton(
               onPressed: () {
                 goHome
-                    ? Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage(title: 'Services ON')),)
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const HomePage(title: 'Services ON')),
+                      )
                     : Navigator.pop(context, true);
               },
               child: const Text('OK'),
@@ -107,33 +116,33 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Informações do cliente',
+        title: const Text(
+          'Informações do cliente',
           textAlign: TextAlign.center,
         ),
         actions: null,
         centerTitle: true,
-        backgroundColor: const Color.fromRGBO(42,68,171, 1),
+        backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
       ),
       backgroundColor: Colors.white,
       body: Container(
-        alignment: Alignment.center,
-        child: FutureBuilder<IRespCliente>(
-          future: _cliente,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  _showContainer(snapshot),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
-            return _loadingDialog();
-          },
-      )
-      ),
+          alignment: Alignment.center,
+          child: FutureBuilder<IRespCliente>(
+            future: _cliente,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _showContainer(snapshot),
+                  ],
+                );
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
+              return _loadingDialog();
+            },
+          )),
     );
   }
 
@@ -179,13 +188,16 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
           height: 55.0,
           child: TextButton(
             onPressed: () => {
-             Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => EditClient(clienteId: snapshot.data!.client_id,)),
-            )
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditClient(
+                          clienteId: snapshot.data!.client_id,
+                        )),
+              )
             },
             style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(42,68,171, 1),
+                backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
                 fixedSize: const Size(150, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
@@ -205,9 +217,9 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
       child: SizedBox(
         height: 55.0,
         child: TextButton(
-         onPressed: () {
-                _showDialogDeleteClient(snapshot.data!.client_id);
-              },
+          onPressed: () {
+            _showDialogDeleteClient(snapshot.data!.client_id);
+          },
           style: TextButton.styleFrom(
               backgroundColor: Colors.red[700],
               fixedSize: const Size(150, 100),
@@ -224,29 +236,41 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
     );
   }
 
-Widget circleImage() {
+  Widget circleImage(response) {
     return Center(
-      child : Container(
-      width: 190.0,
-      height: 190.0,
-      decoration: const BoxDecoration(
+      child: Container(
+        width: 190.0,
+        height: 190.0,
+        child: CircleAvatar(
+          backgroundColor: Colors.blueAccent,
+          child: Text(
+            response.data.name[0],
+            style: const TextStyle(fontSize: 100, color: Colors.white),
+          ),
+          // backgroundImage: AssetImage('assets/cliente.jpg'),
+        ),
+        decoration: const BoxDecoration(
           color: Colors.blue,
           shape: BoxShape.circle,
-          image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/cliente.jpg',)
-            )
+          // image: DecorationImage(
+          // fit: BoxFit.cover,
+          // image: AssetImage('assets/cliente.jpg',)
+          //   )
         ),
-     ),
-   );
-  }   
+      ),
+    );
+  }
 
   Widget _showContainer(snapshot) {
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        children: [circleImage(), _showCard(snapshot), actionsButton(snapshot)],
+        children: [
+          circleImage(snapshot),
+          _showCard(snapshot),
+          actionsButton(snapshot)
+        ],
       ),
     );
   }

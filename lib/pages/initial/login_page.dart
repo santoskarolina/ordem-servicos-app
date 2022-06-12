@@ -5,10 +5,9 @@
 // ignore_for_file: public_member_api_docs
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/foundation.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -29,15 +28,15 @@ class _LoginpageState extends State<Loginpage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
   TextEditingController nomeController = TextEditingController();
-  String _mySelection = "";
   bool _diseableButton = false;
-
 
   UserService userService = UserService();
   bool _isLoginForm = true;
   bool _isLoading = false;
 
-final Connectivity _connectivity = Connectivity();
+  late final String connectionType;
+
+  final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   void getLoing() {
@@ -47,7 +46,7 @@ final Connectivity _connectivity = Connectivity();
       _isLoginForm = false;
     }
   }
-  
+
   void toggleFormMode() {
     resetForm();
     setState(() {
@@ -67,7 +66,8 @@ final Connectivity _connectivity = Connectivity();
   void initState() {
     super.initState();
     initConnectivity();
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
     getLoing();
   }
 
@@ -77,27 +77,32 @@ final Connectivity _connectivity = Connectivity();
     try {
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
-      print(e.toString());
+      setState(() {
+        connectionType = e.toString();
+      });
     }
     if (!mounted) {
       return Future.value(null);
     }
     return _updateConnectionStatus(result);
-}
-    
+  }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     switch (result) {
       case ConnectivityResult.wifi:
-         _diseableButton = false;
-        setState(() => print(result.toString()));
+        _diseableButton = false;
+        setState(() {
+          connectionType = result.toString();
+        });
         break;
       case ConnectivityResult.mobile:
-         _diseableButton = false;
-      setState(() => print(result.toString()));
+        _diseableButton = false;
+        setState(() {
+          connectionType = result.toString();
+        });
         break;
       case ConnectivityResult.none:
-         _diseableButton = true;
+        _diseableButton = true;
         _showDialogConnection();
         break;
       default:
@@ -106,12 +111,11 @@ final Connectivity _connectivity = Connectivity();
     }
   }
 
-@override
+  @override
   void dispose() {
     _connectivitySubscription.cancel();
     super.dispose();
   }
-
 
   void login() async {
     setState(() {
@@ -131,13 +135,17 @@ final Connectivity _connectivity = Connectivity();
       });
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage(title: 'Services ON',)),
+        MaterialPageRoute(
+            builder: (context) => const HomePage(
+                  title: 'Services ON',
+                )),
       );
     } else {
       setState(() {
         _isLoading = false;
       });
-      _showDialog('Usuário e/ou senha incorretos', false, true);
+      _showDialog('Usuário e/ou senha incorretos',
+          'Informe os dados corretamente', false, true);
     }
   }
 
@@ -157,17 +165,18 @@ final Connectivity _connectivity = Connectivity();
 
       setState(() {
         _isLoading = false;
-      _diseableButton = false;
+        _diseableButton = false;
         _isLoginForm = true;
       });
 
-      _showDialog('Usuário criado com sucesso!', true, true);
+      _showDialog('Usuário criado com sucesso!',
+          'Faça login para acessar o sistema', true, true);
     } else if (response.statusCode == 400) {
       setState(() {
         _isLoading = false;
       });
 
-      _showDialog('Email já cadastrado', false, false);
+      _showDialog('Email já cadastrado', 'Utilize outro email', false, false);
     }
   }
 
@@ -175,7 +184,7 @@ final Connectivity _connectivity = Connectivity();
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  AlertDialog(
+        return AlertDialog(
           title: const Text('Ops...'),
           content: const Text('Voê está sem conexão com a internet'),
           actions: <Widget>[
@@ -193,29 +202,64 @@ final Connectivity _connectivity = Connectivity();
     );
   }
 
-  void _showDialog(String text, bool success, bool doLogin) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(success ? 'Sucesso!' : 'Ooppss'),
-          content: Text(text),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  doLogin ? _isLoginForm = true : _isLoginForm = false;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Fechar',
-              ),
+  void _showDialog(String title, String subtitle, bool success, bool doLogin) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(top: 8.2),
+                    child: Text(
+                      subtitle,
+                      style:
+                          const TextStyle(fontSize: 17, color: Colors.black54),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    genericButton(context),
+                  ],
+                )
+              ],
             ),
-          ],
-        );
-      },
-    );
+          );
+        });
+  }
+
+  Widget genericButton(context) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Certo',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
   }
 
   @override
@@ -263,20 +307,43 @@ final Connectivity _connectivity = Connectivity();
   Widget showUserNameInput() {
     if (!_isLoginForm) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
         child: TextFormField(
-          maxLines: 1,
-          controller: nomeController,
-          keyboardType: TextInputType.text,
-          autofocus: false,
-          decoration: const InputDecoration(
-              hintText: 'Nome',
-              icon: Icon(
-                Icons.person,
-                color: Colors.grey,
-              )),
-          validator: (value) => value!.isEmpty ? 'Informe o nome' : null,
-        ),
+            maxLines: 1,
+            maxLength: 100,
+            controller: nomeController,
+            keyboardType: TextInputType.text,
+            autofocus: false,
+            decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[100],
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: const BorderSide(color: Colors.black12),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide:
+                      const BorderSide(color: Colors.black12, width: 0.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide:
+                      const BorderSide(color: Colors.black12, width: 0.0),
+                ),
+                hintText: 'Nome',
+                prefixIcon: const Icon(
+                  Icons.person,
+                  color: Colors.grey,
+                )),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Informe o nome';
+              } else if (value.length < 5) {
+                return 'Informe um nome válido';
+              }
+              return null;
+            }),
       );
     } else {
       return const SizedBox(
@@ -290,18 +357,41 @@ final Connectivity _connectivity = Connectivity();
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
       child: TextFormField(
-        maxLines: 1,
-        controller: emailController,
-        keyboardType: TextInputType.emailAddress,
-        autofocus: false,
-        decoration: const InputDecoration(
-            hintText: 'Email',
-            icon: Icon(
-              Icons.mail,
-              color: Colors.grey,
-            )),
-        validator: (value) => value!.isEmpty ? 'Informe o email' : null,
-      ),
+          maxLines: 1,
+          maxLength: 100,
+          controller: emailController,
+          keyboardType: TextInputType.emailAddress,
+          autofocus: false,
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[100],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              hintText: 'Email',
+              prefixIcon: const Icon(
+                Icons.email_rounded,
+                color: Colors.grey,
+              )),
+          validator: (value) {
+            final bool isValid = EmailValidator.validate(value!);
+            // print('Email is valid? ' + (isValid ? 'yes' : 'no'));
+            if (value.isEmpty) {
+              return 'Informe um email';
+            } else if (isValid == false) {
+              return 'Informe um email válido';
+            }
+            return null;
+          }),
     );
   }
 
@@ -309,18 +399,38 @@ final Connectivity _connectivity = Connectivity();
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
-        maxLines: 1,
-        controller: senhaController,
-        obscureText: true,
-        autofocus: false,
-        decoration: const InputDecoration(
-            hintText: 'Senha',
-            icon: Icon(
-              Icons.lock,
-              color: Colors.grey,
-            )),
-        validator: (value) => value!.isEmpty ? 'Informe a senha' : null,
-      ),
+          maxLines: 1,
+          controller: senhaController,
+          obscureText: true,
+          autofocus: false,
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[100],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              hintText: 'Senha',
+              prefixIcon: const Icon(
+                Icons.password,
+                color: Colors.grey,
+              )),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Informe uma senha';
+            } else if (value.length < 5) {
+              return 'Senha deve ter mais de 5 caracteres';
+            }
+            return null;
+          }),
     );
   }
 
@@ -332,24 +442,23 @@ final Connectivity _connectivity = Connectivity();
       );
     } else {
       return Padding(
-          padding: const EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+          padding: const EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
           child: SizedBox(
             height: 55.0,
             child: TextButton(
               onPressed: () {
-                if(_diseableButton){
+                if (_diseableButton) {
                   null;
-                }
-                else if (_formKey.currentState!.validate()) {
+                } else if (_formKey.currentState!.validate()) {
                   login();
                 }
               },
               style: TextButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+                  backgroundColor: Colors.blue[500],
                   fixedSize: const Size(290, 100),
                   primary: Colors.blue[600],
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(36),
+                    borderRadius: BorderRadius.circular(20),
                   )),
               child: _isLoading
                   ? const Center(
@@ -368,7 +477,7 @@ final Connectivity _connectivity = Connectivity();
   Widget showButtonCreateAccount() {
     if (!_isLoginForm) {
       return Padding(
-          padding: const EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+          padding: const EdgeInsets.fromLTRB(0.0, 25.0, 0.0, 0.0),
           child: SizedBox(
             height: 55.0,
             child: TextButton(
@@ -378,11 +487,11 @@ final Connectivity _connectivity = Connectivity();
                 }
               },
               style: TextButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+                  backgroundColor: Colors.blue[500],
                   fixedSize: const Size(290, 100),
                   primary: Colors.blue[600],
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(36),
+                    borderRadius: BorderRadius.circular(20),
                   )),
               child: _isLoading
                   ? const Center(
@@ -394,8 +503,7 @@ final Connectivity _connectivity = Connectivity();
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
             ),
-          )
-        );
+          ));
     } else {
       return const SizedBox(
         width: 0.0,
@@ -406,9 +514,12 @@ final Connectivity _connectivity = Connectivity();
 
   Widget showSecondaryButton() {
     return TextButton(
-        child: Text(_isLoginForm ? 'Criar conta' : 'Fazer login',  style:const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-        onPressed: toggleFormMode
-      );
+        child: Text(_isLoginForm ? 'Criar conta' : 'Fazer login',
+            style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w300,
+                color: Colors.black)),
+        onPressed: toggleFormMode);
   }
 
   Widget _showForm() {
@@ -428,6 +539,6 @@ final Connectivity _connectivity = Connectivity();
               showSecondaryButton(),
             ],
           ),
-    ));
+        ));
   }
 }

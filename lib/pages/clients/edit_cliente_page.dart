@@ -23,7 +23,6 @@ class _EditClient extends State<EditClient> {
 
   Future<IRespCliente?>? _cliente;
 
-
   var cli;
 
   void getClienteById() {
@@ -36,7 +35,6 @@ class _EditClient extends State<EditClient> {
       print('not ok');
     }
   }
-  
 
   @override
   void initState() {
@@ -51,54 +49,110 @@ class _EditClient extends State<EditClient> {
       isLoading = true;
     });
 
-    IRespCliente newCliente = IRespCliente(name: nome, cell_phone: phone, cpf: cpf);
+    IRespCliente newCliente =
+        IRespCliente(name: nome, cell_phone: phone, cpf: cpf);
 
     var response = await ClienteService.updateCliente(cli, newCliente);
     if (response.statusCode == 400) {
       setState(() {
         isLoading = false;
       });
-      _showDialog('CPF já registrado', false, false);
-    } else  if(response.statusCode == 200){
+      _showDialog('CPF já registrado', 'Use outro cpf', false);
+    } else if (response.statusCode == 200) {
       setState(() {
         isLoading = false;
       });
-      _showDialog('Cliente atualizado com sucesso', true, true);
-    }else{
+      _showDialog(
+          'Cliente atualizado com sucesso', 'Volte para tela inicial', true);
+    } else {
       setState(() {
         isLoading = false;
       });
-      _showDialog('Não foi possível atualizar este cliente', false, false);
+      _showDialog('Não foi possível atualizar este cliente',
+          'Tente novamente mais tarde', false);
     }
   }
 
-  void _showDialog(String text, bool sucesso, bool goHome) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(sucesso ? 'Sucesso' : 'Ooppss'),
-          content: Text(text),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                goHome
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage(
-                                  title: 'Meus serviços',
-                                )),
-                      )
-                    : Navigator.pop(context);
-              },
-              child: const Text(
-                'OK',
-              ),
+  void _showDialog(String title, String subtitle, bool goHome) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(top: 8.2),
+                    child: Text(
+                      subtitle,
+                      style:
+                          const TextStyle(fontSize: 17, color: Colors.black54),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    genericButton(context, goHome),
+                  ],
+                )
+              ],
             ),
-          ],
-        );
-      },
+          );
+        });
+  }
+
+  Widget genericButton(context, goHome) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
+        child: SizedBox(
+          height: 55.0,
+          child: TextButton(
+            onPressed: () {
+              goHome
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomePage(
+                                title: 'Services ON',
+                              )),
+                    )
+                  : Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
+                fixedSize: const Size(150, 100),
+                primary: Colors.blue[600],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            child: const Text(
+              'Certo',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ));
+  }
+
+  Widget _loadingDialog() {
+    return AlertDialog(
+      content: Row(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: CircularProgressIndicator(),
+          ),
+          // const CircularProgressIndicator(),
+          const Text('Carregando...'),
+        ],
+      ),
     );
   }
 
@@ -112,21 +166,21 @@ class _EditClient extends State<EditClient> {
           ),
           actions: null,
           centerTitle: true,
-          backgroundColor: const Color.fromRGBO(42,68,171, 1),
+          backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
         ),
         body: SingleChildScrollView(
-          child: Container(
+            child: Container(
           alignment: Alignment.center,
           child: FutureBuilder<IRespCliente?>(
             future: _cliente,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-              IRespCliente response = snapshot.data!;
-              nomeController.text = response.name!;
-              cpfController.text = response.cpf!;
-              telefoneController.text = response.cell_phone!;
+                IRespCliente response = snapshot.data!;
+                nomeController.text = response.name!;
+                cpfController.text = response.cpf!;
+                telefoneController.text = response.cell_phone!;
                 return Stack(
-                   alignment: Alignment.center,
+                  alignment: Alignment.center,
                   children: [
                     _showForm(response),
                   ],
@@ -134,11 +188,10 @@ class _EditClient extends State<EditClient> {
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
-              return const CircularProgressIndicator();
+              return _loadingDialog();
             },
           ),
-        ))
-      );
+        )));
   }
 
   Widget showNameinput(response) {
@@ -150,26 +203,25 @@ class _EditClient extends State<EditClient> {
         keyboardType: TextInputType.text,
         autofocus: false,
         decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.black12,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide:  const BorderSide(color: Colors.black12 ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
-              ),
-              hintText: 'Nome',
-              prefixIcon: const Icon(
-                Icons.person,
-                color: Colors.grey,
-              )
+            filled: true,
+            fillColor: Colors.grey[100],
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: const BorderSide(color: Colors.black12),
             ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+            ),
+            hintText: 'Nome',
+            prefixIcon: const Icon(
+              Icons.person,
+              color: Colors.grey,
+            )),
         validator: (value) => value!.isEmpty ? 'Informe o nome' : null,
       ),
     );
@@ -184,26 +236,25 @@ class _EditClient extends State<EditClient> {
         keyboardType: TextInputType.number,
         autofocus: false,
         decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.black12,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide:  const BorderSide(color: Colors.black12 ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
-              ),
-              hintText: 'CPF',
-              prefixIcon: const Icon(
-                Icons.phone,
-                color: Colors.grey,
-              )
+            filled: true,
+            fillColor: Colors.grey[100],
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: const BorderSide(color: Colors.black12),
             ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+            ),
+            hintText: 'CPF',
+            prefixIcon: const Icon(
+              Icons.phone,
+              color: Colors.grey,
+            )),
         validator: (value) => value!.isEmpty ? 'Informe o CPF' : null,
       ),
     );
@@ -218,46 +269,46 @@ class _EditClient extends State<EditClient> {
         keyboardType: TextInputType.number,
         autofocus: false,
         decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.black12,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide:  const BorderSide(color: Colors.black12 ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
-              ),
-              hintText: 'Telefone',
-              prefixIcon: const Icon(
-                Icons.phone,
-                color: Colors.grey,
-              )
+            filled: true,
+            fillColor: Colors.grey[100],
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: const BorderSide(color: Colors.black12),
             ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+            ),
+            hintText: 'Telefone',
+            prefixIcon: const Icon(
+              Icons.phone,
+              color: Colors.grey,
+            )),
         validator: (value) => value!.isEmpty ? 'Informe o telefone' : null,
       ),
     );
   }
 
-  Widget showPrimaryButton(response) {
+  Widget confirmButton(response) {
     return Padding(
         padding: const EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
         child: SizedBox(
           height: 55.0,
           child: TextButton(
             onPressed: () {
-              save(nomeController.text, telefoneController.text, cpfController.text);
+              save(nomeController.text, telefoneController.text,
+                  cpfController.text);
             },
             style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(42,68,171, 1),
+                backgroundColor: Colors.blue[500],
                 fixedSize: const Size(390, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                 )),
             child: isLoading
                 ? const Center(
@@ -272,9 +323,9 @@ class _EditClient extends State<EditClient> {
         ));
   }
 
-  Widget showCancelButton() {
+  Widget cancelButton() {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
         child: SizedBox(
           height: 55.0,
           child: TextButton(
@@ -282,11 +333,11 @@ class _EditClient extends State<EditClient> {
               Navigator.pop(context),
             },
             style: TextButton.styleFrom(
-                backgroundColor: Colors.red[700],
+                backgroundColor: Colors.red[500],
                 fixedSize: const Size(390, 100),
-                primary: Colors.blue[600],
+                primary: Colors.red[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                 )),
             child: const Text(
               'Cancelar',
@@ -298,20 +349,24 @@ class _EditClient extends State<EditClient> {
 
   Widget _showForm(response) {
     return Container(
-        padding: const EdgeInsets.all(16.0),
-        alignment: Alignment.center,
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              showNameinput(response),
-              showCpfinput(response),
-              showPhoneInput(response),
-              showPrimaryButton(response),
-              showCancelButton(),
-            ],
-          ),
-        ));
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+            elevation: 6,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10.1, 10.0, 10.0, 10.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    showNameinput(response),
+                    showCpfinput(response),
+                    showPhoneInput(response),
+                    confirmButton(response),
+                    cancelButton(),
+                  ],
+                ),
+              ),
+            )));
   }
 }

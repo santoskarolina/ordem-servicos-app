@@ -136,9 +136,13 @@ class _CLientesPage extends State<CLientesPage> {
                         return Card(
                           elevation: 1,
                           child: ListTile(
-                            leading: const CircleAvatar(
+                            leading: CircleAvatar(
                               backgroundColor: Colors.blueAccent,
-                              backgroundImage: AssetImage('assets/cliente.jpg'),
+                              child: Text(
+                                resp.name[0],
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                              // backgroundImage: AssetImage('assets/cliente.jpg'),
                             ),
                             title: Text(resp.name),
                             onTap: () => {
@@ -171,7 +175,8 @@ class _CLientesPage extends State<CLientesPage> {
                                       showModalBottomSheet(
                                           context: context,
                                           shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20.0)),
                                           ),
                                           builder: (BuildContext context) {
                                             return SizedBox(
@@ -186,15 +191,20 @@ class _CLientesPage extends State<CLientesPage> {
                                                     style:
                                                         TextStyle(fontSize: 20),
                                                   ),
-                                                  const Padding(padding: EdgeInsets.only(top: 8.2),
-                                                  child: Text(
-                                                    'Esta ação não poderá ser desfeita.',
-                                                    style:
-                                                        TextStyle(fontSize: 17, color:  Colors.black54),
-                                                  )),
+                                                  const Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 8.2),
+                                                      child: Text(
+                                                        'Esta ação não poderá ser desfeita.',
+                                                        style: TextStyle(
+                                                            fontSize: 17,
+                                                            color:
+                                                                Colors.black54),
+                                                      )),
                                                   Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       buttonCancel(context),
                                                       buttonDelete(resp),
