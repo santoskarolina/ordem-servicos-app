@@ -57,8 +57,8 @@ class RespService {
   RespCliente? client;
   Status? status;
   dynamic price;
-  dynamic opening_date;
-  dynamic closing_date;
+  String? opening_date;
+  String? closing_date;
 
   RespService(
       {this.service_id,

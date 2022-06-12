@@ -144,26 +144,25 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
         ),
         backgroundColor: Colors.white,
         body: Container(
-            alignment: Alignment.center,
-            child: SingleChildScrollView(
-              child: FutureBuilder<RespService>(
-                future: _service,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    RespService? resp = snapshot.data;
-                    return Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        _showContainer(resp),
-                      ],
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  }
-                  return _loadingDialog();
-                },
-              ),
-            )));
+          alignment: Alignment.center,
+          child: FutureBuilder<RespService>(
+            future: _service,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                RespService? resp = snapshot.data;
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _showContainer(resp),
+                  ],
+                );
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
+              return _loadingDialog();
+            },
+          ),
+        ));
   }
 
   Widget _showCard(snapshot) {
@@ -281,6 +280,7 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
 
   Widget _showContainer(resp) {
     return Container(
+      alignment: Alignment.center,
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [circleImage(), _showCard(resp), actionsButton(resp)],

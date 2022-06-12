@@ -131,7 +131,7 @@ class _ServicesPage extends State<ServicesPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  'Você quer deletar este cliente?',
+                  'Você quer deletar este serviço?',
                   style: TextStyle(fontSize: 20),
                 ),
                 const Padding(

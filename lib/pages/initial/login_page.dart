@@ -143,6 +143,7 @@ class _LoginpageState extends State<Loginpage> {
     } else {
       setState(() {
         _isLoading = false;
+        _diseableButton = false;
       });
       _showDialog('Usuário e/ou senha incorretos',
           'Informe os dados corretamente', false, true);

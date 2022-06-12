@@ -48,7 +48,7 @@ class _EditService extends State<EditService> {
       _service = resBody;
       descController.text = _service["description"];
       priceController.text = _service["price"];
-      closingDateController.text = _service["closing_date"] ?? '';
+      closingDateController.text = _service["closing_date"] ?? "";
       var client = _service["client"];
       _mySelection = client["client_id"];
 
@@ -113,7 +113,9 @@ class _EditService extends State<EditService> {
     data.status = status;
     data.price = price;
     data.opening_date = _service["opening_date"];
-    data.closing_date = closingDateController.text;
+    data.closing_date = closingDateController.text.isNotEmpty
+        ? closingDateController.text
+        : null;
 
     var response = await ServicesService.updateService(_id, data);
     if (response.statusCode == 200) {

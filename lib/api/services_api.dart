@@ -118,7 +118,6 @@ class ServicesService {
     );
 
     final response = requeste;
-    print(response.body);
 
     return response;
   }
