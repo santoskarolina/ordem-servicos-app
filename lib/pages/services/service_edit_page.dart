@@ -10,7 +10,7 @@ import '../initial/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'dart:ui';
+import 'dart:math' as math;
 
 class EditService extends StatefulWidget {
   final int serviceId;
@@ -103,7 +103,7 @@ class _EditService extends State<EditService> {
         RespCliente(cell_phone: '', name: '', client_id: _mySelection);
     var status = Status();
     status.status_id = _mySelectionStatus;
-    var price = int.parse(priceController.text);
+    var price = double.parse(priceController.text);
 
     var _id = widget.serviceId;
     var data = RespService();
