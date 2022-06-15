@@ -74,7 +74,18 @@ class _HomePage extends State<HomePage> {
                     ),
                   );
                 }
-                return const CircularProgressIndicator();
+                return const UserAccountsDrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(42, 68, 171, 1),
+                  ),
+                  accountEmail: Text('Carregando...'),
+                  accountName: Text('Carregando...'),
+                  currentAccountPicture: CircleAvatar(
+                    radius: 30.0,
+                    backgroundImage: AssetImage('assets/client.png'),
+                    backgroundColor: Colors.transparent,
+                  ),
+                );
               },
             ),
             ListTile(

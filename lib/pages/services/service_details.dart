@@ -144,38 +144,43 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
         ),
         backgroundColor: Colors.white,
         body: Container(
-          alignment: Alignment.center,
-          child: FutureBuilder<RespService>(
-            future: _service,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                RespService? resp = snapshot.data;
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    _showContainer(resp),
-                  ],
-                );
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-              return _loadingDialog();
-            },
-          ),
-        ));
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: FutureBuilder<RespService>(
+                future: _service,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    RespService? resp = snapshot.data;
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        _showContainer(resp),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
+                  return _loadingDialog();
+                },
+              ),
+            )));
   }
 
   Widget _showCard(snapshot) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
       child: Card(
-        elevation: 3,
+        elevation: 6,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ListTile(
               title: const Text("Descrição"),
               subtitle: Text(snapshot!.description),
+            ),
+            ListTile(
+              title: const Text("Valor"),
+              subtitle: Text('R\$ ${snapshot!.price}'),
             ),
             ListTile(
               title: const Text("Status"),

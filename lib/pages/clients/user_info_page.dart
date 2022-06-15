@@ -254,7 +254,7 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: Card(
-        elevation: 3,
+        elevation: 6,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -343,8 +343,8 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
   Widget circleImage(response) {
     return Center(
       child: Container(
-        width: 190.0,
-        height: 190.0,
+        width: 150.0,
+        height: 150.0,
         child: CircleAvatar(
           backgroundColor: Colors.blueAccent,
           child: Text(

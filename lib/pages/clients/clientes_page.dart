@@ -5,6 +5,7 @@ import 'package:flutter_application_1/api/cliente_api.dart';
 import 'package:flutter_application_1/models/client_model.dart';
 import 'package:flutter_application_1/pages/clients/user_info_page.dart';
 import 'create_cliente_page.dart';
+import 'dart:math';
 
 class CLientesPage extends StatefulWidget {
   const CLientesPage({Key? key}) : super(key: key);
@@ -170,16 +171,18 @@ class _CLientesPage extends State<CLientesPage> {
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
                         RespCliente resp = snapshot.data![index];
+
                         return Card(
                           elevation: 1,
                           child: ListTile(
                             leading: CircleAvatar(
-                              backgroundColor: Colors.blueAccent,
+                              backgroundColor: Colors.primaries[
+                                  Random().nextInt(Colors.primaries.length)],
                               child: Text(
                                 resp.name[0],
-                                style: const TextStyle(fontSize: 20),
+                                style: const TextStyle(
+                                    fontSize: 20, color: Colors.white),
                               ),
-                              // backgroundImage: AssetImage('assets/cliente.jpg'),
                             ),
                             title: Text(resp.name),
                             onTap: () => {

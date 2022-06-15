@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import '../global_variable.dart';
 import '../models/user.dart';
+import '../models/user.dart';
 import '../models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
