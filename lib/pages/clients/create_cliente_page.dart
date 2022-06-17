@@ -36,7 +36,7 @@ class _CreateClient extends State<CreateClient> {
     if (response.statusCode == 201) {
       Timer(
           const Duration(seconds: 2),
-          () => callFunction('Cliente cadastardo com sucesso',
+          () => callFunction('Cliente cadastrado com sucesso',
               'Volte para página inicial', true));
     } else if (response.statusCode == 400) {
       Timer(const Duration(seconds: 2),

@@ -187,41 +187,38 @@ class _EditClient extends State<EditClient> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Editar cliente",
-            textAlign: TextAlign.center,
-          ),
-          actions: null,
-          centerTitle: true,
-          backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+      appBar: AppBar(
+        title: const Text(
+          "Editar cliente",
+          textAlign: TextAlign.center,
         ),
-        body: Center(
-          child: SingleChildScrollView(
-              child: Container(
-            alignment: Alignment.center,
-            child: FutureBuilder<IRespCliente?>(
-              future: _cliente,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  IRespCliente response = snapshot.data!;
-                  nomeController.text = response.name!;
-                  cpfController.text = response.cpf!;
-                  telefoneController.text = response.cell_phone!;
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      _showForm(response),
-                    ],
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-                return _loadingDialog();
-              },
-            ),
-          )),
-        ));
+        actions: null,
+        centerTitle: true,
+        backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+      ),
+      body: Container(
+        child: FutureBuilder<IRespCliente?>(
+          future: _cliente,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              IRespCliente response = snapshot.data!;
+              nomeController.text = response.name!;
+              cpfController.text = response.cpf!;
+              telefoneController.text = response.cell_phone!;
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  _showForm(response),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+            return _loadingDialog();
+          },
+        ),
+      ),
+    );
   }
 
   Widget showNameinput(response) {
