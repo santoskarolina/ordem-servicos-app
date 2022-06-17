@@ -182,12 +182,14 @@ class _LoginpageState extends State<Loginpage> {
           'Faça login para acessar o sistema', true, true);
     } else if (response.statusCode == 400) {
       setState(() {
+        _diseableButton = false;
         _isLoading = false;
       });
 
       _showDialog('Email já cadastrado', 'Utilize outro email', false, false);
     } else {
       setState(() {
+        _diseableButton = false;
         _isLoading = false;
       });
       _showDialog('Não foi possível criar sua conta',
