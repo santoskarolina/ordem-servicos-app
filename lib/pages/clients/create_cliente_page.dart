@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../api/cliente_api.dart';
 import '../initial/home_page.dart';
+import 'dart:async';
 
 class CreateClient extends StatefulWidget {
   const CreateClient({Key? key}) : super(key: key);
@@ -21,32 +22,43 @@ class _CreateClient extends State<CreateClient> {
   }
 
   bool isLoading = false;
+  bool _diseableButton = false;
 
   void save() async {
     setState(() {
+      _diseableButton = true;
       isLoading = true;
     });
 
     var response = await ClienteService.createCliente(
         nomeController.text, cpfController.text, telefoneController.text);
+
     if (response.statusCode == 201) {
-      setState(() {
-        isLoading = false;
-      });
-      _showDialog('Cliente cadastrado com sucesso',
-          'Acesse a pagina de clientes', true);
+      Timer(
+          const Duration(seconds: 2),
+          () => callFunction('Cliente cadastardo com sucesso',
+              'Volte para página inicial', true));
     } else if (response.statusCode == 400) {
-      setState(() {
-        isLoading = false;
-      });
-      _showDialog('CPF já cadastrado', 'Utilize outro cpf', false);
+      Timer(const Duration(seconds: 2),
+          () => callFunction('CPF já cadastrado', 'Utilize outro cpf', false));
     } else {
-      setState(() {
-        isLoading = false;
-      });
-      _showDialog('Não foi possível cadastrar este cliente',
-          'Tente novamente mais tarde', true);
+      Timer(
+          const Duration(seconds: 2),
+          () => callFunction('Não foi possível cadastrar este cliente',
+              'Tente novamente mais tarde', false));
     }
+  }
+
+  void callFunction(String message, String subtitle, bool action) {
+    setState(() {
+      _diseableButton = true;
+      isLoading = false;
+    });
+    _showDialog(message, subtitle, action);
+    setState(() {
+      _diseableButton = false;
+      isLoading = false;
+    });
   }
 
   void _showDialog(String title, String subtitle, bool goHome) {
@@ -269,7 +281,10 @@ class _CreateClient extends State<CreateClient> {
           height: 55.0,
           child: TextButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
+              if (_diseableButton) {
+                null;
+              } else if (_formKey.currentState!.validate() &&
+                  !_diseableButton) {
                 save();
               }
             },
@@ -300,7 +315,7 @@ class _CreateClient extends State<CreateClient> {
           height: 55.0,
           child: TextButton(
             onPressed: () => {
-              Navigator.pop(context),
+              _diseableButton ? null : Navigator.pop(context),
             },
             style: TextButton.styleFrom(
                 backgroundColor: Colors.red[500],

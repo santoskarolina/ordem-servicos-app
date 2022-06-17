@@ -5,7 +5,6 @@ import '../../api/user_api.dart';
 import '../../models/user.dart';
 
 class MyProfile extends StatefulWidget {
-
   const MyProfile({Key? key}) : super(key: key);
 
   @override
@@ -13,17 +12,16 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfile extends State<MyProfile> {
+  late Future<UserResponse> _userData;
 
-   late Future<UserResponse> _userData;
-   
-   getFormatedDate(_date) {
-      var inputFormat = DateFormat('yyyy-MM-dd');
-      var inputDate = inputFormat.parse(_date);
-      var outputFormat = DateFormat('dd/MM/yyyy');
-      return outputFormat.format(inputDate);
-    }
+  getFormatedDate(_date) {
+    var inputFormat = DateFormat('yyyy-MM-dd');
+    var inputDate = inputFormat.parse(_date);
+    var outputFormat = DateFormat('dd/MM/yyyy');
+    return outputFormat.format(inputDate);
+  }
 
-   void userProfile() {
+  void userProfile() {
     setState(() {
       _userData = UserService.userProfile();
     });
@@ -35,7 +33,7 @@ class _MyProfile extends State<MyProfile> {
     userProfile();
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -54,7 +52,7 @@ class _MyProfile extends State<MyProfile> {
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
-            return _loadingDialog();
+            return _fetchData();
           },
         ),
       ),
@@ -88,37 +86,43 @@ class _MyProfile extends State<MyProfile> {
     );
   }
 
-  Widget _loadingDialog() {
-    return AlertDialog(
-      content: Row(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(right: 12.0),
-            child: CircularProgressIndicator(),
-          ),
-          // const CircularProgressIndicator(),
-          const Text('Carregando...'),
-        ],
+  Widget _fetchData() {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 16,
+      backgroundColor: Colors.white,
+      child: Container(
+        width: 180,
+        height: 180,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 20,
+            ),
+            Text('Carregando...')
+          ],
+        ),
       ),
     );
   }
 
-  
-Widget circleImage(snapshot) {
+  Widget circleImage(snapshot) {
     return Center(
-      child : Container(
-      width: 190.0,
-      height: 190.0,
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(snapshot!.data.photo)
-            )
-        ),
-     ),
-   );
-  } 
+      child: Container(
+        width: 190.0,
+        height: 190.0,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+                fit: BoxFit.cover, image: NetworkImage(snapshot!.data.photo))),
+      ),
+    );
+  }
 
   Widget _showContainer(snapshot) {
     return Container(
@@ -129,5 +133,4 @@ Widget circleImage(snapshot) {
       ),
     );
   }
-  
 }

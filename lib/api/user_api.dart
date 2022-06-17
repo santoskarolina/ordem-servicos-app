@@ -9,7 +9,7 @@ import '../models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
-  static Future<bool> login(UserRequest userRequest) async {
+  static Future<Response> login(UserRequest userRequest) async {
     var url = Uri.parse('${GlobalApi.url}/auth/login');
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -23,9 +23,9 @@ class UserService {
           LoginResponse.fromJson(json.decode(response.body)).access_token;
       await prefs.setString('access_token', accessToken2!);
 
-      return true;
+      return response;
     } else {
-      return false;
+      return response;
     }
   }
 

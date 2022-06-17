@@ -103,16 +103,26 @@ class _ServicesPage extends State<ServicesPage> {
   }
 
   Widget _loadingDialog() {
-    return AlertDialog(
-      content: Row(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(right: 12.0),
-            child: CircularProgressIndicator(),
-          ),
-          // const CircularProgressIndicator(),
-          const Text('Carregando...'),
-        ],
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 16,
+      backgroundColor: Colors.white,
+      child: Container(
+        width: 180,
+        height: 180,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 20,
+            ),
+            Text('Carregando...')
+          ],
+        ),
       ),
     );
   }

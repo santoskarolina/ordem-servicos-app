@@ -64,7 +64,10 @@ class _DashboardState extends State<Dashboard> {
   get dashBg => Column(
         children: <Widget>[
           Expanded(
-            child: Container(color: Colors.deepPurple),
+            // const Color.fromRGBO(42, 68, 171, 1),
+            child: Container(
+              color: const Color.fromRGBO(42, 68, 171, 1),
+            ),
             flex: 2,
           ),
           Expanded(
@@ -168,6 +171,7 @@ class _DashboardState extends State<Dashboard> {
                       textAlign: TextAlign.center,
                     );
                   }
+                  // return const CircularProgressIndicator();
                   return const Text('0',
                       style: TextStyle(fontSize: 38, color: Colors.black45),
                       textAlign: TextAlign.center);
@@ -213,6 +217,7 @@ class _DashboardState extends State<Dashboard> {
                       textAlign: TextAlign.center,
                     );
                   }
+                  // return const CircularProgressIndicator();
                   return const Text('0',
                       style: TextStyle(fontSize: 38, color: Colors.black45),
                       textAlign: TextAlign.center);

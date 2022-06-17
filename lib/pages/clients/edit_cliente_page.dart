@@ -43,9 +43,11 @@ class _EditClient extends State<EditClient> {
   }
 
   bool isLoading = false;
+  bool _diseableButton = false;
 
   void save(nome, phone, cpf) async {
     setState(() {
+      _diseableButton = true;
       isLoading = true;
     });
 
@@ -60,10 +62,14 @@ class _EditClient extends State<EditClient> {
       _showDialog('CPF já registrado', 'Use outro cpf', false);
     } else if (response.statusCode == 200) {
       setState(() {
+        _diseableButton = true;
         isLoading = false;
       });
       _showDialog(
           'Cliente atualizado com sucesso', 'Volte para tela inicial', true);
+      setState(() {
+        _diseableButton = false;
+      });
     } else {
       setState(() {
         isLoading = false;
@@ -71,6 +77,18 @@ class _EditClient extends State<EditClient> {
       _showDialog('Não foi possível atualizar este cliente',
           'Tente novamente mais tarde', false);
     }
+  }
+
+  void callFunction(String message, String subtitle, bool action) {
+    setState(() {
+      _diseableButton = true;
+      isLoading = false;
+    });
+    _showDialog(message, subtitle, action);
+    setState(() {
+      _diseableButton = false;
+      isLoading = false;
+    });
   }
 
   void _showDialog(String title, String subtitle, bool goHome) {
@@ -142,16 +160,26 @@ class _EditClient extends State<EditClient> {
   }
 
   Widget _loadingDialog() {
-    return AlertDialog(
-      content: Row(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(right: 12.0),
-            child: CircularProgressIndicator(),
-          ),
-          // const CircularProgressIndicator(),
-          const Text('Carregando...'),
-        ],
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 16,
+      backgroundColor: Colors.white,
+      child: Container(
+        width: 180,
+        height: 180,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 20,
+            ),
+            Text('Carregando...')
+          ],
+        ),
       ),
     );
   }
@@ -168,30 +196,32 @@ class _EditClient extends State<EditClient> {
           centerTitle: true,
           backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
         ),
-        body: SingleChildScrollView(
-            child: Container(
-          alignment: Alignment.center,
-          child: FutureBuilder<IRespCliente?>(
-            future: _cliente,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                IRespCliente response = snapshot.data!;
-                nomeController.text = response.name!;
-                cpfController.text = response.cpf!;
-                telefoneController.text = response.cell_phone!;
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    _showForm(response),
-                  ],
-                );
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-              return _loadingDialog();
-            },
-          ),
-        )));
+        body: Center(
+          child: SingleChildScrollView(
+              child: Container(
+            alignment: Alignment.center,
+            child: FutureBuilder<IRespCliente?>(
+              future: _cliente,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  IRespCliente response = snapshot.data!;
+                  nomeController.text = response.name!;
+                  cpfController.text = response.cpf!;
+                  telefoneController.text = response.cell_phone!;
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      _showForm(response),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+                return _loadingDialog();
+              },
+            ),
+          )),
+        ));
   }
 
   Widget showNameinput(response) {
@@ -300,8 +330,13 @@ class _EditClient extends State<EditClient> {
           height: 55.0,
           child: TextButton(
             onPressed: () {
-              save(nomeController.text, telefoneController.text,
-                  cpfController.text);
+              if (_diseableButton) {
+                null;
+              } else if (_formKey.currentState!.validate() &&
+                  !_diseableButton) {
+                (save(nomeController.text, telefoneController.text,
+                    cpfController.text));
+              }
             },
             style: TextButton.styleFrom(
                 backgroundColor: Colors.blue[500],
@@ -330,7 +365,7 @@ class _EditClient extends State<EditClient> {
           height: 55.0,
           child: TextButton(
             onPressed: () => {
-              Navigator.pop(context),
+              _diseableButton ? null : Navigator.pop(context),
             },
             style: TextButton.styleFrom(
                 backgroundColor: Colors.red[500],

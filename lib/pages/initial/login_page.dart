@@ -106,6 +106,7 @@ class _LoginpageState extends State<Loginpage> {
         _showDialogConnection();
         break;
       default:
+        _diseableButton = true;
         _showDialogConnection();
         break;
     }
@@ -128,7 +129,7 @@ class _LoginpageState extends State<Loginpage> {
     userRequest.password = senhaController.text;
 
     var response = await UserService.login(userRequest);
-    if (response) {
+    if (response.statusCode == 201) {
       setState(() {
         _diseableButton = false;
         _isLoading = false;
@@ -140,13 +141,20 @@ class _LoginpageState extends State<Loginpage> {
                   title: 'Services ON',
                 )),
       );
-    } else {
+    } else if (response.statusCode == 401) {
       setState(() {
         _isLoading = false;
         _diseableButton = false;
       });
       _showDialog('Usuário e/ou senha incorretos',
           'Informe os dados corretamente', false, true);
+    } else {
+      setState(() {
+        _isLoading = false;
+        _diseableButton = false;
+      });
+      _showDialog('Não foi possível fazer o login',
+          'Tente novamente mais tarde', false, true);
     }
   }
 
@@ -489,7 +497,9 @@ class _LoginpageState extends State<Loginpage> {
             height: 55.0,
             child: TextButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                if (_diseableButton) {
+                  null;
+                } else if (_formKey.currentState!.validate()) {
                   createAccount();
                 }
               },
@@ -526,7 +536,7 @@ class _LoginpageState extends State<Loginpage> {
                 fontSize: 18.0,
                 fontWeight: FontWeight.w300,
                 color: Colors.black)),
-        onPressed: toggleFormMode);
+        onPressed: _diseableButton ? null : toggleFormMode);
   }
 
   Widget _showForm() {
