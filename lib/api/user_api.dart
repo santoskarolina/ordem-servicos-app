@@ -9,24 +9,29 @@ import '../models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
-  static Future<Response> login(UserRequest userRequest) async {
+  static Future<Response?> login(UserRequest userRequest) async {
     var url = Uri.parse('${GlobalApi.url}/auth/login');
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final response = await http.post(
-      url,
-      body: userRequest.toJson(),
-    );
-    if (response.statusCode == 201) {
-      var accessToken2 =
-          LoginResponse.fromJson(json.decode(response.body)).access_token;
-      await prefs.setString('access_token', accessToken2!);
+    try {
+      final response = await http.post(
+        url,
+        body: userRequest.toJson(),
+      );
+      if (response.statusCode == 201) {
+        var accessToken2 =
+            LoginResponse.fromJson(json.decode(response.body)).access_token;
+        await prefs.setString('access_token', accessToken2!);
 
-      return response;
-    } else {
-      return response;
+        return response;
+      } else {
+        return response;
+      }
+    } on SocketException {
+      print("No internet connection");
     }
+    return null;
   }
 
   static Future<Response> createAccount(UserCreateAccount user) async {

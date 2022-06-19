@@ -28,9 +28,11 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
   void deletarCliente(int cliente) async {
     var response = await ClienteService.deletarCliente(cliente);
     if (response.statusCode == 500) {
-      message('Cliente não pode ser deletado', 'Ele possui serviços', false);
+      message(
+          'Cliente não pode ser deletado', 'Ele possui serviços', false, false);
     } else if (response.statusCode == 200) {
-      message('Cliente deletado com sucesso', 'Volte para tela inicial', true);
+      message('Cliente deletado com sucesso', 'Volte para tela inicial', true,
+          true);
     }
   }
 
@@ -41,7 +43,7 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
     getCliente();
   }
 
-  void message(String title, String subtitle, bool goHome) {
+  void message(String title, String subtitle, bool goHome, bool icon) {
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -49,14 +51,24 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
         ),
         builder: (BuildContext context) {
           return SizedBox(
-            height: 200,
+            height: 300,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 20),
+                Container(
+                    width: 50,
+                    height: 50,
+                    alignment: Alignment.center,
+                    child: icon
+                        ? Image.asset("assets/success.png")
+                        : Image.asset("assets/close.png")),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontSize: 20),
+                  ),
                 ),
                 Padding(
                     padding: const EdgeInsets.only(top: 8.2),
@@ -65,12 +77,7 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
                       style:
                           const TextStyle(fontSize: 17, color: Colors.black54),
                     )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    genericButton(context, goHome),
-                  ],
-                )
+                genericButton(context, true),
               ],
             ),
           );
@@ -78,35 +85,37 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
   }
 
   Widget genericButton(context, goHome) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
-        child: SizedBox(
-          height: 55.0,
-          child: TextButton(
-            onPressed: () {
-              goHome
-                  ? Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomePage(
-                                title: 'Services ON',
-                              )),
-                    )
-                  : Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
-                fixedSize: const Size(150, 100),
-                primary: Colors.blue[600],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )),
-            child: const Text(
-              'Certo',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ),
-        ));
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      height: 55.0,
+      width: double.maxFinite,
+      child: TextButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+                const EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0)),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ))),
+        child: const Text('OK',
+            style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w800,
+                color: Colors.white)),
+        onPressed: () {
+          goHome
+              ? Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HomePage(
+                            title: 'Services ON',
+                          )),
+                )
+              : Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   void _showDialog(id) {
@@ -117,26 +126,30 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
         ),
         builder: (BuildContext context) {
           return SizedBox(
-            height: 200,
+            height: 300,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Você quer deletar este cliente?',
-                  style: TextStyle(fontSize: 20),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  child: const Text(
+                    'Você quer deletar este cliente?',
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
-                const Padding(
-                    padding: EdgeInsets.only(top: 8.2),
-                    child: Text(
-                      'Esta ação não poderá ser desfeita.',
-                      style: TextStyle(fontSize: 17, color: Colors.black54),
-                    )),
-                Row(
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  child: const Text(
+                    'Esta ação não poderá ser desfeita.',
+                    style: TextStyle(fontSize: 17, color: Colors.black54),
+                  ),
+                ),
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    buttonCancel(context),
                     buttonDelete(id),
+                    buttonCancel(context),
                   ],
                 )
               ],
@@ -146,59 +159,58 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
   }
 
   Widget buttonCancel(context) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
-        child: SizedBox(
-          height: 55.0,
-          child: TextButton(
-            onPressed: () {
-              setState(() {
-                loadingDelete = false;
-                print(loadingDelete);
-              });
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
-                fixedSize: const Size(150, 100),
-                primary: Colors.blue[600],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )),
-            child: const Text(
-              'Não',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ),
-        ));
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      height: 55.0,
+      width: double.maxFinite,
+      child: TextButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                Colors.grey[600] ?? Colors.blue),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+                const EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0)),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ))),
+        child: const Text('Não, cancelar',
+            style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w800,
+                color: Colors.white)),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   Widget buttonDelete(int cliente) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 45.0, 0.0, 0.0),
-        child: SizedBox(
-          height: 55.0,
-          child: TextButton(
-            onPressed: () {
-              setState(() {
-                loadingDelete = true;
-              });
-              deletarCliente(cliente);
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(255, 0, 0, 120),
-                fixedSize: const Size(150, 100),
-                primary: Colors.blue[600],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )),
-            child: const Text(
-              'Sim',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ),
-        ));
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      height: 55.0,
+      width: double.maxFinite,
+      child: TextButton(
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(Colors.red[300] ?? Colors.red),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+                const EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0)),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ))),
+        child: const Text('Sim, deletar cliente',
+            style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w800,
+                color: Colors.white)),
+        onPressed: () {
+          deletarCliente(cliente);
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   Widget _loadingDialog() {
@@ -241,48 +253,24 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
       backgroundColor: Colors.white,
       body: Container(
           alignment: Alignment.center,
-          child: FutureBuilder<IRespCliente>(
-            future: _cliente,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    _showContainer(snapshot),
-                  ],
-                );
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-              return _loadingDialog();
-            },
+          child: SingleChildScrollView(
+            child: FutureBuilder<IRespCliente>(
+              future: _cliente,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      _showContainer(snapshot),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+                return _loadingDialog();
+              },
+            ),
           )),
-    );
-  }
-
-  Widget _showCard(snapshot) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
-      child: Card(
-        elevation: 6,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ListTile(
-              title: const Text("Nome"),
-              subtitle: Text(snapshot.data!.name),
-            ),
-            ListTile(
-              title: const Text("CPF"),
-              subtitle: Text(snapshot.data!.cpf),
-            ),
-            ListTile(
-              title: const Text("Telefone"),
-              subtitle: Text(snapshot.data!.cell_phone),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -350,27 +338,189 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
     );
   }
 
-  Widget circleImage(response) {
-    return Center(
-      child: Container(
-        width: 150.0,
-        height: 150.0,
-        child: CircleAvatar(
-          backgroundColor: Colors.blueAccent,
-          child: Text(
-            response.data.name[0],
-            style: const TextStyle(fontSize: 100, color: Colors.white),
+  Widget circleImage(snapshot) {
+    return Container(
+      width: double.infinity,
+      height: 290.0,
+      decoration: const BoxDecoration(
+        shape: BoxShape.rectangle,
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Color.fromRGBO(42, 68, 171, 1),
+            // Color.fromRGBO(42, 70, 171, 1),
+            Color.fromRGBO(42, 170, 171, 1),
+          ],
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Container(
+              width: 170.0,
+              height: 170.0,
+              child: CircleAvatar(
+                backgroundColor: Colors.blue,
+                child: Text(
+                  snapshot.data.name[0],
+                  style: const TextStyle(fontSize: 100, color: Colors.white),
+                ),
+                // backgroundImage: AssetImage('assets/cliente.jpg'),
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+            ),
           ),
-          // backgroundImage: AssetImage('assets/cliente.jpg'),
-        ),
-        decoration: const BoxDecoration(
-          color: Colors.blue,
-          shape: BoxShape.circle,
-          // image: DecorationImage(
-          // fit: BoxFit.cover,
-          // image: AssetImage('assets/cliente.jpg',)
-          //   )
-        ),
+          const SizedBox(height: 20),
+          Text(
+            snapshot.data!.name,
+            style: const TextStyle(color: Colors.white, fontSize: 28),
+          ),
+          const SizedBox(height: 10),
+        ],
+      ),
+    );
+  }
+
+  Widget nameUser(snapshot) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        color: Colors.black38,
+        width: 0.9,
+      ))),
+      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.grey,
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Nome do cliente',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      snapshot!.data.name,
+                      style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget cpfuser(snapshot) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        color: Colors.black38,
+        width: 0.9,
+      ))),
+      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.grey,
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'CPF do cliente',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      snapshot!.data.cpf,
+                      style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget phoneUser(snapshot) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        color: Colors.black38,
+        width: 0.9,
+      ))),
+      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.grey,
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Telefone',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      snapshot!.data.cell_phone,
+                      style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -378,11 +528,13 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
   Widget _showContainer(snapshot) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(bottom: 20.0),
       child: Column(
         children: [
           circleImage(snapshot),
-          _showCard(snapshot),
+          nameUser(snapshot),
+          cpfuser(snapshot),
+          phoneUser(snapshot),
           actionsButton(snapshot)
         ],
       ),

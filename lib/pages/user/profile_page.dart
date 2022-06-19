@@ -61,34 +61,6 @@ class _MyProfile extends State<MyProfile> {
     );
   }
 
-  Widget _showCard(snapshot) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
-      child: Card(
-        elevation: 3,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // showImage()
-            ListTile(
-              leading: const Icon(Icons.email),
-              title: const Text("Nome"),
-              subtitle: Text(snapshot.data!.user_name ?? 'Não defino'),
-            ),
-            ListTile(
-              title: const Text("Email"),
-              subtitle: Text(snapshot.data!.email),
-            ),
-            ListTile(
-              title: const Text("Data de criação da conta"),
-              subtitle: Text(getFormatedDate(snapshot.data!.creation_date)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _fetchData() {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -221,11 +193,6 @@ class _MyProfile extends State<MyProfile> {
             Color.fromRGBO(42, 170, 171, 1),
           ],
         ),
-        // borderRadius: BorderRadius.only(
-        //     bottomRight: Radius.circular(20.0),
-        //     bottomLeft: Radius.circular(20.0)),
-        // image: DecorationImage(
-        //     fit: BoxFit.cover, image: NetworkImage(snapshot!.data.photo))
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

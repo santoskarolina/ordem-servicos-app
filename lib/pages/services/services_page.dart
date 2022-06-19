@@ -35,14 +35,15 @@ class _ServicesPage extends State<ServicesPage> {
       setState(() {
         getCLientes();
       });
-      message('Serviço deletado com sucesso', 'Volte para página inicial');
+      message(
+          'Serviço deletado com sucesso', 'Volte para página inicial', true);
     } else {
       message('Não foi possível deletar este serviço',
-          'Tente novamente mais tarde');
+          'Tente novamente mais tarde', false);
     }
   }
 
-  void message(String title, String subtitle) {
+  void message(String title, String subtitle, bool icon) {
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -50,14 +51,24 @@ class _ServicesPage extends State<ServicesPage> {
         ),
         builder: (BuildContext context) {
           return SizedBox(
-            height: 200,
+            height: 300,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 20),
+                Container(
+                    width: 50,
+                    height: 50,
+                    alignment: Alignment.center,
+                    child: icon
+                        ? Image.asset("assets/success.png")
+                        : Image.asset("assets/close.png")),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontSize: 20),
+                  ),
                 ),
                 Padding(
                     padding: const EdgeInsets.only(top: 8.2),
@@ -66,12 +77,7 @@ class _ServicesPage extends State<ServicesPage> {
                       style:
                           const TextStyle(fontSize: 17, color: Colors.black54),
                     )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    genericButton(context),
-                  ],
-                )
+                genericButton(context),
               ],
             ),
           );
@@ -79,27 +85,29 @@ class _ServicesPage extends State<ServicesPage> {
   }
 
   Widget genericButton(context) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
-        child: SizedBox(
-          height: 55.0,
-          child: TextButton(
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-            style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
-                fixedSize: const Size(150, 100),
-                primary: Colors.blue[600],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )),
-            child: const Text(
-              'Certo',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ),
-        ));
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      height: 55.0,
+      width: double.maxFinite,
+      child: TextButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+                const EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0)),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ))),
+        child: const Text('OK',
+            style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w800,
+                color: Colors.white)),
+        onPressed: () {
+          Navigator.pop(context, true);
+        },
+      ),
+    );
   }
 
   Widget _loadingDialog() {
@@ -135,26 +143,30 @@ class _ServicesPage extends State<ServicesPage> {
         ),
         builder: (BuildContext context) {
           return SizedBox(
-            height: 200,
+            height: 300,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Você quer deletar este serviço?',
-                  style: TextStyle(fontSize: 20),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  child: const Text(
+                    'Você quer deletar este serviço?',
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
-                const Padding(
-                    padding: EdgeInsets.only(top: 8.2),
-                    child: Text(
-                      'Esta ação não poderá ser desfeita.',
-                      style: TextStyle(fontSize: 17, color: Colors.black54),
-                    )),
-                Row(
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  child: const Text(
+                    'Esta ação não poderá ser desfeita.',
+                    style: TextStyle(fontSize: 17, color: Colors.black54),
+                  ),
+                ),
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    buttonCancel(context),
                     buttonDelete(id),
+                    buttonCancel(context),
                   ],
                 )
               ],
@@ -241,52 +253,58 @@ class _ServicesPage extends State<ServicesPage> {
   }
 
   Widget buttonDelete(int cliente) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 45.0, 0.0, 0.0),
-        child: SizedBox(
-          height: 55.0,
-          child: TextButton(
-            onPressed: () {
-              deletarServico(cliente);
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(255, 0, 0, 120),
-                fixedSize: const Size(150, 100),
-                primary: Colors.blue[600],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )),
-            child: const Text(
-              'Sim',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ),
-        ));
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      height: 55.0,
+      width: double.maxFinite,
+      child: TextButton(
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(Colors.red[300] ?? Colors.red),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+                const EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0)),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ))),
+        child: const Text('Sim, deletar serviço',
+            style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w800,
+                color: Colors.white)),
+        onPressed: () {
+          deletarServico(cliente);
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   Widget buttonCancel(context) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
-        child: SizedBox(
-          height: 55.0,
-          child: TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
-                fixedSize: const Size(150, 100),
-                primary: Colors.blue[600],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )),
-            child: const Text(
-              'Não',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ),
-        ));
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      height: 55.0,
+      width: double.maxFinite,
+      child: TextButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                Colors.grey[600] ?? Colors.blue),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+                const EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0)),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ))),
+        child: const Text('Não, cancelar',
+            style: TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w800,
+                color: Colors.white)),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   Widget _showContainer() {

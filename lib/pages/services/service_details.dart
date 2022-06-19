@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../api/services_api.dart';
 import '../../models/services_model.dart';
 import '../initial/home_page.dart';
+import 'package:antdesign_icons/antdesign_icons.dart';
 
 class ServiceInfoPage extends StatefulWidget {
   final int serviceId;
@@ -177,46 +178,6 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
             )));
   }
 
-  Widget _showCard(snapshot) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-      child: Card(
-        elevation: 6,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ListTile(
-              title: const Text("Descrição"),
-              subtitle: Text(snapshot!.description),
-            ),
-            ListTile(
-              title: const Text("Valor"),
-              subtitle: Text('R\$ ${snapshot!.price}'),
-            ),
-            ListTile(
-              title: const Text("Status"),
-              subtitle: Text(snapshot!.status.name!),
-            ),
-            ListTile(
-              title: const Text("Data de abertura"),
-              subtitle: Text(getFormatedDate(snapshot!.opening_date)),
-            ),
-            ListTile(
-                title: const Text("Data de fechamento"),
-                subtitle: snapshot!.closing_date == "" ||
-                        snapshot!.closing_date == null
-                    ? const Text('Serviço em aberto')
-                    : Text(getFormatedDate(snapshot!.closing_date))),
-            ListTile(
-              title: const Text("Cliente"),
-              subtitle: Text(snapshot!.client.name),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget actionsButton(snapshot) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 0.0),
@@ -278,18 +239,278 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
     );
   }
 
-  Widget circleImage() {
-    return Center(
-      child: Container(
-        width: 150.0,
-        height: 150.0,
-        decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-                fit: BoxFit.fitHeight,
-                image: AssetImage(
-                  'assets/service.jpg',
-                ))),
+  Widget circleImage(snapshot) {
+    return Container(
+      width: double.infinity,
+      height: 290.0,
+      decoration: const BoxDecoration(
+        shape: BoxShape.rectangle,
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Color.fromRGBO(42, 68, 171, 1),
+            // Color.fromRGBO(42, 70, 171, 1),
+            Color.fromRGBO(42, 170, 171, 1),
+          ],
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Container(
+              width: 170.0,
+              height: 170.0,
+              child: const CircleAvatar(
+                backgroundColor: Colors.blue,
+                backgroundImage: AssetImage("assets/service.png"),
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            snapshot.description,
+            style: const TextStyle(color: Colors.white, fontSize: 28),
+          ),
+          const SizedBox(height: 10),
+        ],
+      ),
+    );
+  }
+
+  Widget priceService(snapshot) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        color: Colors.black38,
+        width: 0.9,
+      ))),
+      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                  child: Icon(
+                    AntIcons.playCircleOutlined,
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Valor',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      ('R\$ ${snapshot!.price}'),
+                      style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget statusService(snapshot) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        color: Colors.black38,
+        width: 0.9,
+      ))),
+      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                  child: Icon(
+                    AntIcons.starOutlined,
+                    color: Colors.grey,
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Status',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      snapshot.status.name,
+                      style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget clienteService(snapshot) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        color: Colors.black38,
+        width: 0.9,
+      ))),
+      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                  child: Icon(
+                    AntIcons.userOutlined,
+                    color: Colors.grey,
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Cliente',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      snapshot.client.name,
+                      style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget oppeningDateService(snapshot) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        color: Colors.black38,
+        width: 0.9,
+      ))),
+      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                  child: Icon(
+                    AntIcons.calendarFilled,
+                    color: Colors.grey,
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Data de abertura',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      getFormatedDate(snapshot!.opening_date),
+                      style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget closingDateService(snapshot) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        color: Colors.black38,
+        width: 0.9,
+      ))),
+      padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                  child: Icon(
+                    AntIcons.calendarFilled,
+                    color: Colors.grey,
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Data de fechamento',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      snapshot!.closing_date == "" ||
+                              snapshot!.closing_date == null
+                          ? 'Serviço em aberto'
+                          : getFormatedDate(snapshot!.opening_date),
+                      style: TextStyle(color: Colors.grey[700], fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -297,9 +518,17 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
   Widget _showContainer(resp) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(bottom: 20.0),
       child: Column(
-        children: [circleImage(), _showCard(resp), actionsButton(resp)],
+        children: [
+          circleImage(resp),
+          priceService(resp),
+          statusService(resp),
+          clienteService(resp),
+          oppeningDateService(resp),
+          closingDateService(resp),
+          actionsButton(resp)
+        ],
       ),
     );
   }
