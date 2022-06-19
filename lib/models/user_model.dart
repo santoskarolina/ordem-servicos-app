@@ -7,7 +7,12 @@ class User {
   String? creation_date;
   String? photo;
 
-   User({this.user_id, this.user_name, this.email, this.creation_date, this.photo});
+  User(
+      {this.user_id,
+      this.user_name,
+      this.email,
+      this.creation_date,
+      this.photo});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -49,11 +54,17 @@ class UserRequest {
 
 class UserCreateAccount {
   String? user_name;
-   String? email;
+  String? email;
   String? password;
-  String photo; 
+  String photo;
+  String? occupation_area;
 
-  UserCreateAccount({this.password, this.email, this.user_name,  required this.photo});
+  UserCreateAccount(
+      {this.password,
+      this.email,
+      this.user_name,
+      required this.photo,
+      this.occupation_area});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
@@ -61,6 +72,7 @@ class UserCreateAccount {
       'password': password.toString(),
       'user_name': user_name.toString(),
       'photo': photo.toString(),
+      'occupation_area': occupation_area.toString(),
     };
     return map;
   }

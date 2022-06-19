@@ -3,6 +3,7 @@ import 'package:flutter_application_1/models/client_model.dart';
 import 'package:flutter_application_1/pages/initial/home_page.dart';
 import '../../api/cliente_api.dart';
 import 'edit_cliente_page.dart';
+import 'package:antdesign_icons/antdesign_icons.dart';
 
 class ClienteInfoPage extends StatefulWidget {
   final int clienteid;
@@ -349,7 +350,7 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
           end: Alignment.bottomLeft,
           colors: [
             Color.fromRGBO(42, 68, 171, 1),
-            // Color.fromRGBO(42, 70, 171, 1),
+            Color.fromRGBO(42, 90, 182, 1),
             Color.fromRGBO(42, 170, 171, 1),
           ],
         ),
@@ -407,7 +408,7 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
               const Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
                   child: Icon(
-                    Icons.person,
+                    AntIcons.userOutlined,
                     color: Colors.grey,
                   )),
               Column(
@@ -453,14 +454,14 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
               const Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
                   child: Icon(
-                    Icons.person,
+                    AntIcons.securityScanFilled,
                     color: Colors.grey,
                   )),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'CPF do cliente',
+                    'CPF',
                     style: TextStyle(color: Colors.grey[600], fontSize: 20),
                   ),
                   Container(
@@ -499,7 +500,7 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
               const Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
                   child: Icon(
-                    Icons.person,
+                    AntIcons.phoneOutlined,
                     color: Colors.grey,
                   )),
               Column(

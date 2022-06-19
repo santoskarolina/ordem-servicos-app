@@ -3,8 +3,7 @@ import 'package:flutter_application_1/api/services_api.dart';
 import 'package:flutter_application_1/models/services_model.dart';
 import 'package:flutter_application_1/pages/services/service_create_page.dart';
 import 'package:flutter_application_1/pages/services/service_details.dart';
-import '../../models/menu_enum.dart';
-import '../initial/home_page.dart';
+import 'package:antdesign_icons/antdesign_icons.dart';
 
 class ServicesPage extends StatefulWidget {
   const ServicesPage({Key? key}) : super(key: key);
@@ -218,12 +217,13 @@ class _ServicesPage extends State<ServicesPage> {
                                                     serviceId: resp.service_id,
                                                   )));
                                     },
-                                    icon: const Icon(Icons.info_rounded)),
+                                    icon: const Icon(
+                                        AntIcons.infoCircleOutlined)),
                                 IconButton(
                                     onPressed: () {
                                       _showDialog(resp.service_id);
                                     },
-                                    icon: const Icon(Icons.delete)),
+                                    icon: const Icon(AntIcons.deleteTwotone)),
                               ],
                             ),
                           ),

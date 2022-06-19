@@ -28,6 +28,8 @@ class _LoginpageState extends State<Loginpage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
   TextEditingController nomeController = TextEditingController();
+  TextEditingController occupationAreaController = TextEditingController();
+
   bool _diseableButton = false;
 
   final Color _accentColor = const Color(0xFF272727);
@@ -168,6 +170,7 @@ class _LoginpageState extends State<Loginpage> {
     account.email = emailController.text;
     account.password = senhaController.text;
     account.user_name = nomeController.text;
+    account.occupation_area = occupationAreaController.text;
     var response = await UserService.createAccount(account);
 
     if (response.statusCode == 201) {
@@ -422,6 +425,53 @@ class _LoginpageState extends State<Loginpage> {
     }
   }
 
+  Widget showOccupationAreaInput() {
+    if (!_isLoginForm) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+        child: TextFormField(
+            maxLines: 1,
+            maxLength: 100,
+            controller: occupationAreaController,
+            keyboardType: TextInputType.text,
+            autofocus: false,
+            decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[100],
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: const BorderSide(color: Colors.black12),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide:
+                      const BorderSide(color: Colors.black12, width: 0.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide:
+                      const BorderSide(color: Colors.black12, width: 0.0),
+                ),
+                hintText: 'Ex.: Eletricista autonomo',
+                prefixIcon: const Icon(
+                  Icons.person,
+                  color: Colors.grey,
+                )),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Informe sua area de atuação';
+              }
+              return null;
+            }),
+      );
+    } else {
+      return const SizedBox(
+        height: 0.0,
+        width: 0.0,
+      );
+    }
+  }
+
   Widget showEmailInput() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
@@ -603,6 +653,7 @@ class _LoginpageState extends State<Loginpage> {
             children: <Widget>[
               circleImage(),
               showUserNameInput(),
+              showOccupationAreaInput(),
               showEmailInput(),
               showPasswordInput(),
               showPrimaryButton(),

@@ -219,9 +219,9 @@ class _MyProfile extends State<MyProfile> {
             style: const TextStyle(color: Colors.white, fontSize: 28),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Eletricista',
-            style: TextStyle(color: Colors.white, fontSize: 22),
+          Text(
+            snapshot.data!.occupation_area,
+            style: const TextStyle(color: Colors.white, fontSize: 22),
           )
         ],
       ),
