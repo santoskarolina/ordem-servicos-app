@@ -4,6 +4,7 @@ import 'package:flutter_application_1/pages/initial/home_page.dart';
 import '../../api/cliente_api.dart';
 import 'edit_cliente_page.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class ClienteInfoPage extends StatefulWidget {
   final int clienteid;
@@ -17,6 +18,9 @@ class ClienteInfoPage extends StatefulWidget {
 class _ClienteInfoPageState extends State<ClienteInfoPage> {
   late Future<IRespCliente> _cliente;
 
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
+
+  var clientIdButton;
   late bool loadingDelete;
 
   void getCliente() {
@@ -259,6 +263,7 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
               future: _cliente,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  clientIdButton = snapshot.data!.client_id;
                   return Stack(
                     alignment: Alignment.center,
                     children: [
@@ -272,69 +277,43 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
               },
             ),
           )),
-    );
-  }
-
-  Widget actionsButton(snapshot) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 9.0, 0.0, 0.0),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [showButton(snapshot), showDeleteButton(snapshot)]),
-    );
-  }
-
-  Widget showButton(snapshot) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 9.0, 10.0, 0.0),
-        child: SizedBox(
-          height: 55.0,
-          child: TextButton(
-            onPressed: () => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EditClient(
-                          clienteId: snapshot.data!.client_id,
-                        )),
-              )
-            },
-            style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
-                fixedSize: const Size(150, 100),
-                primary: Colors.blue[600],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                )),
-            child: const Icon(
-              Icons.edit,
-              color: Colors.white,
-            ),
-          ),
-        ));
-  }
-
-  Widget showDeleteButton(snapshot) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10.0, 9.0, 10.0, 0.0),
-      child: SizedBox(
-        height: 55.0,
-        child: TextButton(
-          onPressed: () {
-            _showDialog(snapshot.data!.client_id);
-          },
-          style: TextButton.styleFrom(
-              backgroundColor: Colors.red[700],
-              fixedSize: const Size(150, 100),
-              primary: Colors.blue[600],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              )),
-          child: const Icon(
-            Icons.delete,
-            color: Colors.white,
-          ),
-        ),
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        backgroundColor: Colors.blue[600],
+        overlayColor: Colors.grey,
+        openCloseDial: isDialOpen,
+        overlayOpacity: 0.5,
+        spacing: 15,
+        spaceBetweenChildren: 15,
+        closeManually: false,
+        children: [
+          SpeedDialChild(
+              child: const Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+              label: 'Deletar',
+              backgroundColor: Colors.red,
+              onTap: () {
+                _showDialog(clientIdButton);
+              }),
+          SpeedDialChild(
+              child: const Icon(
+                Icons.edit,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.blue[900],
+              label: 'Editar',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditClient(
+                            clienteId: clientIdButton,
+                          )),
+                );
+              }),
+        ],
       ),
     );
   }
@@ -536,7 +515,6 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
           nameUser(snapshot),
           cpfuser(snapshot),
           phoneUser(snapshot),
-          actionsButton(snapshot)
         ],
       ),
     );

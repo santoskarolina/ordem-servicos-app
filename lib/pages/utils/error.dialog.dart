@@ -20,8 +20,8 @@ class _ErrorPopupScreenState extends State<ErrorPopupScreen> {
                 backgroundColor: MaterialStateProperty.all<Color>(_accentColor),
                 elevation: MaterialStateProperty.all<double>(10.0),
                 padding: MaterialStateProperty.all<EdgeInsets>(
-                    EdgeInsets.all(15.0))),
-            child: Text('SHOW POPUP!',
+                    const EdgeInsets.all(15.0))),
+            child: const Text('SHOW POPUP!',
                 style: TextStyle(
                     fontSize: 15.0,
                     fontWeight: FontWeight.w800,

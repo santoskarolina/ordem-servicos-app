@@ -10,7 +10,6 @@ import '../initial/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'dart:math' as math;
 
 class EditService extends StatefulWidget {
   final int serviceId;
@@ -219,15 +218,15 @@ class _EditService extends State<EditService> {
           centerTitle: true,
           backgroundColor: Colors.blue[700],
         ),
-        body: SingleChildScrollView(
-            child: Container(
-          alignment: Alignment.center,
-          child: Stack(
-            children: [
-              _showForm(),
-            ],
-          ),
-        )));
+        body: Container(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  _showForm(),
+                ],
+              ),
+            )));
   }
 
   Widget showDescriptioninput() {

@@ -6,6 +6,7 @@ import '../../api/services_api.dart';
 import '../../models/services_model.dart';
 import '../initial/home_page.dart';
 import 'package:antdesign_icons/antdesign_icons.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class ServiceInfoPage extends StatefulWidget {
   final int serviceId;
@@ -18,6 +19,7 @@ class ServiceInfoPage extends StatefulWidget {
 
 class _ServiceInfoPageState extends State<ServiceInfoPage> {
   late Future<RespService> _service;
+  var serviceIdbutton;
 
   void getService() async {
     setState(() {
@@ -152,96 +154,73 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Informações do serviço',
-            textAlign: TextAlign.center,
-          ),
-          actions: null,
-          centerTitle: true,
-          backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+      appBar: AppBar(
+        title: const Text(
+          'Informações do serviço',
+          textAlign: TextAlign.center,
         ),
-        backgroundColor: Colors.white,
-        body: Container(
-            alignment: Alignment.center,
-            child: SingleChildScrollView(
-              child: FutureBuilder<RespService>(
-                future: _service,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    RespService? resp = snapshot.data;
-                    return Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        _showContainer(resp),
-                      ],
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  }
-                  return _loadingDialog();
-                },
-              ),
-            )));
-  }
-
-  Widget actionsButton(snapshot) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 0.0),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [showDeleteButton(snapshot), showEditButton(snapshot)]),
-    );
-  }
-
-  Widget showEditButton(resp) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 9.0, 10.0, 0.0),
-        child: SizedBox(
-          height: 55.0,
-          child: TextButton(
-            onPressed: () => {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        EditService(serviceId: resp.service_id),
-                  ))
-            },
-            style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
-                fixedSize: const Size(150, 100),
-                primary: Colors.blue[600],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                )),
-            child: const Icon(
-              Icons.edit,
-              color: Colors.white,
+        actions: null,
+        centerTitle: true,
+        backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+      ),
+      backgroundColor: Colors.white,
+      body: Container(
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: FutureBuilder<RespService>(
+              future: _service,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  RespService? resp = snapshot.data;
+                  serviceIdbutton = resp?.service_id;
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      _showContainer(resp),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+                return _loadingDialog();
+              },
             ),
-          ),
-        ));
-  }
-
-  Widget showDeleteButton(snapshot) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10.0, 9.0, 10.0, 0.0),
-      child: SizedBox(
-        height: 55.0,
-        child: TextButton(
-          onPressed: () => {_showDialog(snapshot.service_id)},
-          style: TextButton.styleFrom(
-              backgroundColor: Colors.red[700],
-              fixedSize: const Size(150, 100),
-              primary: Colors.blue[600],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              )),
-          child: const Icon(
-            Icons.delete,
-            color: Colors.white,
-          ),
-        ),
+          )),
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        backgroundColor: Colors.blue[600],
+        overlayColor: Colors.grey,
+        overlayOpacity: 0.5,
+        spacing: 15,
+        spaceBetweenChildren: 15,
+        closeManually: false,
+        children: [
+          SpeedDialChild(
+              child: const Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+              label: 'Deletar',
+              backgroundColor: Colors.red,
+              onTap: () {
+                _showDialog(serviceIdbutton);
+              }),
+          SpeedDialChild(
+              child: const Icon(
+                Icons.edit,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.blue[900],
+              label: 'Editar',
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          EditService(serviceId: serviceIdbutton),
+                    ));
+              }),
+        ],
       ),
     );
   }
@@ -251,17 +230,18 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
       width: double.infinity,
       height: 290.0,
       decoration: const BoxDecoration(
-        shape: BoxShape.rectangle,
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Color.fromRGBO(42, 68, 171, 1),
-            // Color.fromRGBO(42, 70, 171, 1),
-            Color.fromRGBO(42, 170, 171, 1),
-          ],
-        ),
-      ),
+          shape: BoxShape.rectangle, color: Color.fromRGBO(70, 143, 175, 1)
+          // gradient: LinearGradient(
+          //   begin: Alignment.topRight,
+          //   end: Alignment.bottomLeft,
+          //   colors: [
+          //     Color.fromRGBO(70, 143, 175, 1),
+          //     Color.fromRGBO(168, 214, 229, 1),
+          //     Color.fromRGBO(137, 194, 217, 1),
+          //     Color.fromRGBO(70, 143, 175, 1),
+          //   ],
+          // ),
+          ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -272,7 +252,7 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
               height: 170.0,
               child: const CircleAvatar(
                 backgroundColor: Colors.blue,
-                backgroundImage: AssetImage("assets/service.png"),
+                backgroundImage: AssetImage("assets/service.jpg"),
               ),
               decoration: const BoxDecoration(
                 color: Colors.blue,
@@ -534,7 +514,6 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
           clienteService(resp),
           oppeningDateService(resp),
           closingDateService(resp),
-          actionsButton(resp)
         ],
       ),
     );
@@ -622,7 +601,7 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
                 RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5.0),
             ))),
-        child: const Text('Sim, deletar cliente',
+        child: const Text('Sim, deletar serviço',
             style: TextStyle(
                 fontSize: 13.0,
                 fontWeight: FontWeight.w800,

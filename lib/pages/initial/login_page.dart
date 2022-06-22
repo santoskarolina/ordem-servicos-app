@@ -150,14 +150,14 @@ class _LoginpageState extends State<Loginpage> {
         _diseableButton = false;
       });
       _showDialog('Usuário e/ou senha incorretos',
-          'Informe os dados corretamente', false, true);
+          'Informe os dados corretamente', false);
     } else {
       setState(() {
         _isLoading = false;
         _diseableButton = false;
       });
       _showDialog('Não foi possível fazer o login',
-          'Tente novamente mais tarde', false, true);
+          'Tente novamente mais tarde', false);
     }
   }
 
@@ -183,21 +183,21 @@ class _LoginpageState extends State<Loginpage> {
       });
 
       _showDialog('Usuário criado com sucesso!',
-          'Faça login para acessar o sistema', true, true);
+          'Faça login para acessar o sistema', true);
     } else if (response.statusCode == 400) {
       setState(() {
         _diseableButton = false;
         _isLoading = false;
       });
 
-      _showDialog('Email já cadastrado', 'Utilize outro email', false, false);
+      _showDialog('Email já cadastrado', 'Utilize outro email', false);
     } else {
       setState(() {
         _diseableButton = false;
         _isLoading = false;
       });
       _showDialog('Não foi possível criar sua conta',
-          'Tente novamente mais tarde', false, false);
+          'Tente novamente mais tarde', false);
     }
   }
 
@@ -223,7 +223,7 @@ class _LoginpageState extends State<Loginpage> {
     );
   }
 
-  void _showDialog(String title, String subtitle, bool success, bool doLogin) {
+  void _showDialog(String title, String subtitle, bool success) {
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -258,57 +258,6 @@ class _LoginpageState extends State<Loginpage> {
           );
         });
   }
-
-  // void dialog() {
-  //   showDialog(
-  //       context: context,
-  //       builder: (_) {
-  //         return AlertDialog(
-  //           content: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               const SizedBox(height: 10.0),
-  //               Image.asset("assets/close.png", width: 45.0),
-  //               const SizedBox(height: 20.0),
-  //               const Text('Oops!',
-  //                   style: TextStyle(
-  //                       fontSize: 25.0,
-  //                       fontWeight: FontWeight.w800,
-  //                       color: Color(0xFFE04F5F))),
-  //               const SizedBox(height: 20.0),
-  //               Text('Usuário e/ou senha incorretos.\nTente novamente.',
-  //                   textAlign: TextAlign.center,
-  //                   style: TextStyle(
-  //                     fontSize: 15.0,
-  //                     fontWeight: FontWeight.w400,
-  //                     color: _accentColor,
-  //                   )),
-  //               const SizedBox(height: 30.0),
-  //               TextButton(
-  //                 style: ButtonStyle(
-  //                     backgroundColor:
-  //                         MaterialStateProperty.all<Color>(_accentColor),
-  //                     padding: MaterialStateProperty.all<EdgeInsets>(
-  //                         const EdgeInsets.symmetric(
-  //                             horizontal: 50.0, vertical: 15.0)),
-  //                     shape: MaterialStateProperty.all<OutlinedBorder>(
-  //                         RoundedRectangleBorder(
-  //                       borderRadius: BorderRadius.circular(5.0),
-  //                     ))),
-  //                 child: const Text('OK',
-  //                     style: TextStyle(
-  //                         fontSize: 13.0,
-  //                         fontWeight: FontWeight.w800,
-  //                         color: Colors.white)),
-  //                 onPressed: () {
-  //                   Navigator.pop(context);
-  //                 },
-  //               )
-  //             ],
-  //           ),
-  //         );
-  //       });
-  // }
 
   Widget genericButton(context) {
     return Padding(
