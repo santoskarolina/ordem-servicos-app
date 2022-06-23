@@ -32,6 +32,8 @@ class _CreateService extends State<CreateService> {
   List<DropdownMenuItem> items = [];
   int _mySelection = 0;
 
+  late bool loadingData = true;
+
   bool isLoading = false;
 
   Future<String> getData() async {
@@ -52,6 +54,7 @@ class _CreateService extends State<CreateService> {
               child: Text(item['name']), value: item['client_id']))
           .toList();
       _mySelection = data[0]["client_id"];
+      loadingData = false;
     });
     return "Sucess";
   }
@@ -96,6 +99,31 @@ class _CreateService extends State<CreateService> {
   void initState() {
     super.initState();
     getData();
+  }
+
+  Widget _loadingDialog() {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 16,
+      backgroundColor: Colors.white,
+      child: Container(
+        width: 180,
+        height: 180,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 20,
+            ),
+            Text('Carregando...')
+          ],
+        ),
+      ),
+    );
   }
 
   void _showDialog(String title, String subtitle, bool goHome) {
@@ -178,13 +206,20 @@ class _CreateService extends State<CreateService> {
           centerTitle: true,
           backgroundColor: Colors.blue[700],
         ),
-        body: SingleChildScrollView(
-          child: Stack(
-            children: [
-              collumn(),
-            ],
-          ),
-        ));
+        body: loadingData
+            ? SizedBox(
+                height: MediaQuery.of(context).size.height / 1.3,
+                child: Center(
+                  child: _loadingDialog(),
+                ),
+              )
+            : SingleChildScrollView(
+                child: Stack(
+                  children: [
+                    collumn(),
+                  ],
+                ),
+              ));
   }
 
   Widget collumn() {
