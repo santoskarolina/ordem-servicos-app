@@ -257,10 +257,10 @@ class _EditService extends State<EditService> {
                 ),
               )
             : Container(
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 child: SingleChildScrollView(
                   child: Stack(
-                    alignment: Alignment.center,
+                    alignment: Alignment.topCenter,
                     children: [
                       collumn(),
                     ],
