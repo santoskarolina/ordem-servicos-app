@@ -10,6 +10,8 @@ import '../initial/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../utils/constantes.dart';
+
 class CreateService extends StatefulWidget {
   const CreateService({Key? key}) : super(key: key);
 
@@ -169,7 +171,7 @@ class _CreateService extends State<CreateService> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Cadastrar serviço',
+            'Services ON',
             textAlign: TextAlign.center,
           ),
           actions: null,
@@ -179,10 +181,39 @@ class _CreateService extends State<CreateService> {
         body: SingleChildScrollView(
           child: Stack(
             children: [
-              _showForm(),
+              collumn(),
             ],
           ),
         ));
+  }
+
+  Widget collumn() {
+    return Column(
+      children: [
+        header(),
+        _showForm(),
+      ],
+    );
+  }
+
+  Widget header() {
+    return Container(
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        width: 2.0,
+        color: Colors.black12,
+      ))),
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
+      child: const Text(
+        'Cadastrar serviço',
+        style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w500,
+            color: MyCustomColors.hexHeader),
+      ),
+    );
   }
 
   Widget showDescriptioninput() {
@@ -270,11 +301,11 @@ class _CreateService extends State<CreateService> {
               }
             },
             style: TextButton.styleFrom(
-                backgroundColor: Colors.blue[500],
+                backgroundColor: MyCustomColors.hexColorConfirmButton,
                 fixedSize: const Size(390, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 )),
             child: isLoading
                 ? const Center(
@@ -299,14 +330,14 @@ class _CreateService extends State<CreateService> {
               Navigator.pop(context),
             },
             style: TextButton.styleFrom(
-                backgroundColor: Colors.red[500],
+                backgroundColor: MyCustomColors.hexColorCancelButton,
                 fixedSize: const Size(390, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 )),
             child: const Text(
-              'Cancelar',
+              'CANCELAR',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
@@ -357,13 +388,15 @@ class _CreateService extends State<CreateService> {
     return Container(
         padding: const EdgeInsets.all(8.0),
         child: Card(
-            elevation: 6,
+            // elevation: 6,
+            shape: const RoundedRectangleBorder(
+              side: BorderSide(color: Colors.black12, width: 1.0),
+            ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10.1, 10.0, 10.0, 10.0),
               child: Form(
                 key: _formKey,
-                child: ListView(
-                  shrinkWrap: true,
+                child: Column(
                   children: <Widget>[
                     showDescriptioninput(),
                     showPriceInput(),

@@ -3,6 +3,8 @@ import '../../api/cliente_api.dart';
 import '../initial/home_page.dart';
 import 'dart:async';
 
+import '../utils/constantes.dart';
+
 class CreateClient extends StatefulWidget {
   const CreateClient({Key? key}) : super(key: key);
 
@@ -134,7 +136,7 @@ class _CreateClient extends State<CreateClient> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Cadastrar cliente',
+            'Services ON',
             textAlign: TextAlign.center,
           ),
           actions: null,
@@ -143,11 +145,39 @@ class _CreateClient extends State<CreateClient> {
         ),
         body: SingleChildScrollView(
           child: Stack(
-            children: [
-              _showForm(),
-            ],
+            alignment: Alignment.topCenter,
+            children: [collumn()],
           ),
         ));
+  }
+
+  Widget collumn() {
+    return Column(
+      children: [
+        header(),
+        _showForm(),
+      ],
+    );
+  }
+
+  Widget header() {
+    return Container(
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        width: 2.0,
+        color: Colors.black12,
+      ))),
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
+      child: const Text(
+        'Cadastrar cliente',
+        style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w500,
+            color: MyCustomColors.hexHeader),
+      ),
+    );
   }
 
   Widget nameFormField() {
@@ -289,11 +319,11 @@ class _CreateClient extends State<CreateClient> {
               }
             },
             style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
+                backgroundColor: MyCustomColors.hexColorConfirmButton,
                 fixedSize: const Size(390, 100),
                 primary: Colors.blue[500],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 )),
             child: isLoading
                 ? const Center(
@@ -301,7 +331,7 @@ class _CreateClient extends State<CreateClient> {
                     color: Colors.white,
                   ))
                 : const Text(
-                    'Salvar',
+                    'SALVAR',
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
           ),
@@ -318,14 +348,14 @@ class _CreateClient extends State<CreateClient> {
               _diseableButton ? null : Navigator.pop(context),
             },
             style: TextButton.styleFrom(
-                backgroundColor: Colors.red[500],
+                backgroundColor: MyCustomColors.hexColorCancelButton,
                 fixedSize: const Size(390, 100),
                 primary: Colors.red[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 )),
             child: const Text(
-              'Cancelar',
+              'CANCELAR',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
@@ -336,7 +366,10 @@ class _CreateClient extends State<CreateClient> {
     return Container(
         padding: const EdgeInsets.all(8.0),
         child: Card(
-            elevation: 6,
+            // elevation: 6,
+            shape: const RoundedRectangleBorder(
+              side: BorderSide(color: Colors.black12, width: 1.0),
+            ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10.1, 10.0, 10.0, 10.0),
               child: Form(

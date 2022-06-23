@@ -11,6 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
+import '../utils/constantes.dart';
+
 class EditService extends StatefulWidget {
   final int serviceId;
 
@@ -29,6 +31,8 @@ class _EditService extends State<EditService> {
   TextEditingController closingDateController = TextEditingController();
 
   late dynamic _service;
+
+  late bool loadingService = true;
 
   Future<dynamic> getService() async {
     var _id = widget.serviceId;
@@ -53,6 +57,8 @@ class _EditService extends State<EditService> {
 
       var status = _service["status"];
       _mySelectionStatus = status["status_id"];
+
+      loadingService = false;
     });
     return null;
   }
@@ -129,6 +135,31 @@ class _EditService extends State<EditService> {
       });
       _showDialog('Não foi possível atualizar este serviço', '', false);
     }
+  }
+
+  Widget _loadingDialog() {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 16,
+      backgroundColor: Colors.white,
+      child: Container(
+        width: 180,
+        height: 180,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 20,
+            ),
+            Text('Carregando...')
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -211,23 +242,59 @@ class _EditService extends State<EditService> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Editar serviço',
+            'Services ON',
             textAlign: TextAlign.center,
           ),
           actions: null,
           centerTitle: true,
           backgroundColor: Colors.blue[700],
         ),
-        body: Container(
-            alignment: Alignment.topCenter,
-            child: SingleChildScrollView(
-              child: Stack(
-                // alignment: Alignment.center,
-                children: [
-                  _showForm(),
-                ],
-              ),
-            )));
+        body: loadingService
+            ? SizedBox(
+                height: MediaQuery.of(context).size.height / 1.3,
+                child: Center(
+                  child: _loadingDialog(),
+                ),
+              )
+            : Container(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      collumn(),
+                    ],
+                  ),
+                )));
+  }
+
+  Widget collumn() {
+    return Column(
+      children: [
+        header(),
+        _showForm(),
+      ],
+    );
+  }
+
+  Widget header() {
+    return Container(
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        width: 2.0,
+        color: Colors.black12,
+      ))),
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
+      child: const Text(
+        'Editar serviço',
+        style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w500,
+            color: MyCustomColors.hexHeader),
+      ),
+    );
   }
 
   Widget showDescriptioninput() {
@@ -307,48 +374,48 @@ class _EditService extends State<EditService> {
   Widget selectClossingDate() {
     return Padding(
         padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-        child: Column(
-          children: [
-            ElevatedButton.icon(
-              onPressed: () {
-                DatePicker.showDatePicker(context,
-                    showTitleActions: true,
-                    minTime: DateTime(2000, 1, 1),
-                    theme: const DatePickerTheme(
-                        headerColor: Colors.black12,
-                        backgroundColor: Colors.white,
-                        itemStyle: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                        doneStyle:
-                            TextStyle(color: Colors.black, fontSize: 16)),
-                    onChanged: (date) {
-                  // print('change $date in time zone ' +
-                  //     date.timeZoneOffset.inHours.toString());
-                }, onConfirm: (date) {
-                  var now = date;
-                  var _formattetime = DateTime(now.year, now.month, now.day);
-                  setState(() {
-                    closingDateController.text = _formattetime.toString();
-                  });
-                }, currentTime: DateTime.now(), locale: LocaleType.en);
-              },
-              icon: const Icon(
-                Icons.date_range,
-                size: 24.0,
-              ),
-              label: const Text('Data de fechamento'),
+        child: SizedBox(
+          height: 50.0,
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              DatePicker.showDatePicker(context,
+                  showTitleActions: true,
+                  minTime: DateTime(2000, 1, 1),
+                  theme: const DatePickerTheme(
+                      headerColor: Colors.black12,
+                      backgroundColor: Colors.white,
+                      itemStyle: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                      doneStyle: TextStyle(color: Colors.black, fontSize: 16)),
+                  onChanged: (date) {
+                // print('change $date in time zone ' +
+                //     date.timeZoneOffset.inHours.toString());
+              }, onConfirm: (date) {
+                var now = date;
+                var _formattetime = DateTime(now.year, now.month, now.day);
+                setState(() {
+                  closingDateController.text = _formattetime.toString();
+                });
+              }, currentTime: DateTime.now(), locale: LocaleType.en);
+            },
+            icon: const Icon(
+              Icons.date_range,
+              size: 24.0,
             ),
-          ],
+            label: const Text('Data de fechamento'),
+          ),
         ));
   }
 
   Widget showPrimaryButton() {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+        padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
         child: SizedBox(
           height: 55.0,
+          width: double.infinity,
           child: TextButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
@@ -356,11 +423,11 @@ class _EditService extends State<EditService> {
               }
             },
             style: TextButton.styleFrom(
-                backgroundColor: Colors.blue[500],
+                backgroundColor: MyCustomColors.hexColorConfirmButton,
                 fixedSize: const Size(190, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 )),
             child: isLoading
                 ? const Center(
@@ -380,19 +447,20 @@ class _EditService extends State<EditService> {
         padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
         child: SizedBox(
           height: 55.0,
+          width: double.infinity,
           child: TextButton(
             onPressed: () => {
               Navigator.pop(context),
             },
             style: TextButton.styleFrom(
-                backgroundColor: Colors.red[500],
+                backgroundColor: MyCustomColors.hexColorCancelButton,
                 fixedSize: const Size(190, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 )),
             child: const Text(
-              'Cancelar',
+              'CANCELAR',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
@@ -448,8 +516,7 @@ class _EditService extends State<EditService> {
               padding: const EdgeInsets.fromLTRB(10.1, 10.0, 10.0, 10.0),
               child: Form(
                 key: _formKey,
-                child: ListView(
-                  shrinkWrap: true,
+                child: Column(
                   children: <Widget>[
                     showDescriptioninput(),
                     showPriceInput(),

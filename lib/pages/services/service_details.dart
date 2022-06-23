@@ -165,7 +165,7 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
       ),
       backgroundColor: Colors.white,
       body: Container(
-          alignment: Alignment.center,
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             child: FutureBuilder<RespService>(
               future: _service,
@@ -174,7 +174,7 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
                   RespService? resp = snapshot.data;
                   serviceIdbutton = resp?.service_id;
                   return Stack(
-                    alignment: Alignment.center,
+                    alignment: Alignment.topCenter,
                     children: [
                       _showContainer(resp),
                     ],
@@ -182,7 +182,12 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 }
-                return _loadingDialog();
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  child: Center(
+                    child: _loadingDialog(),
+                  ),
+                );
               },
             ),
           )),
@@ -489,7 +494,7 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
                       snapshot!.closing_date == "" ||
                               snapshot!.closing_date == null
                           ? 'Serviço em aberto'
-                          : getFormatedDate(snapshot!.opening_date),
+                          : getFormatedDate(snapshot!.closing_date),
                       style: TextStyle(color: Colors.grey[700], fontSize: 20),
                     ),
                   ),

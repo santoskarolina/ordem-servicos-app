@@ -9,6 +9,7 @@ class InitialPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          elevation: 6,
           title: const Text(
             'Services ON',
             textAlign: TextAlign.center,

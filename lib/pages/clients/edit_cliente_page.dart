@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/client_model.dart';
+import 'package:flutter_application_1/pages/utils/constantes.dart';
 
 import '../../api/cliente_api.dart';
 import '../initial/home_page.dart';
@@ -187,34 +188,73 @@ class _EditClient extends State<EditClient> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Editar cliente",
-          textAlign: TextAlign.center,
+        appBar: AppBar(
+          title: const Text(
+            "Services ON",
+            textAlign: TextAlign.center,
+          ),
+          actions: null,
+          centerTitle: true,
+          backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
         ),
-        actions: null,
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
-      ),
-      body: FutureBuilder<IRespCliente?>(
-        future: _cliente,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            IRespCliente response = snapshot.data!;
-            nomeController.text = response.name!;
-            cpfController.text = response.cpf!;
-            telefoneController.text = response.cell_phone!;
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                _showForm(response),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-          return _loadingDialog();
-        },
+        body: Container(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            child: FutureBuilder<IRespCliente?>(
+              future: _cliente,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  IRespCliente response = snapshot.data!;
+                  nomeController.text = response.name!;
+                  cpfController.text = response.cpf!;
+                  telefoneController.text = response.cell_phone!;
+                  return Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      collumn(response),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                } else {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height / 1.3,
+                    child: Center(
+                      child: _loadingDialog(),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ));
+  }
+
+  Widget collumn(response) {
+    return Column(
+      children: [
+        header(),
+        _showForm(response),
+      ],
+    );
+  }
+
+  Widget header() {
+    return Container(
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        width: 2.0,
+        color: Colors.black12,
+      ))),
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
+      child: const Text(
+        'Editar cliente',
+        style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w500,
+            color: MyCustomColors.hexHeader),
       ),
     );
   }
@@ -224,6 +264,7 @@ class _EditClient extends State<EditClient> {
       padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: TextFormField(
         maxLines: 1,
+        maxLength: 255,
         controller: nomeController,
         keyboardType: TextInputType.text,
         autofocus: false,
@@ -343,11 +384,11 @@ class _EditClient extends State<EditClient> {
               }
             },
             style: TextButton.styleFrom(
-                backgroundColor: Colors.blue[500],
+                backgroundColor: MyCustomColors.hexColorConfirmButton,
                 fixedSize: const Size(390, 100),
                 primary: Colors.blue[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 )),
             child: isLoading
                 ? const Center(
@@ -355,7 +396,7 @@ class _EditClient extends State<EditClient> {
                     color: Colors.white,
                   ))
                 : const Text(
-                    'Salvar',
+                    'SALVAR',
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
           ),
@@ -372,14 +413,14 @@ class _EditClient extends State<EditClient> {
               _diseableButton ? null : Navigator.pop(context),
             },
             style: TextButton.styleFrom(
-                backgroundColor: Colors.red[500],
+                backgroundColor: MyCustomColors.hexColorCancelButton,
                 fixedSize: const Size(390, 100),
                 primary: Colors.red[600],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 )),
             child: const Text(
-              'Cancelar',
+              'CANCELAR',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
@@ -390,13 +431,16 @@ class _EditClient extends State<EditClient> {
     return Container(
         padding: const EdgeInsets.all(8.0),
         child: Card(
-            elevation: 6,
+            // elevation: 6,
+            shape: const RoundedRectangleBorder(
+              side: BorderSide(color: Colors.black12, width: 1.0),
+            ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10.1, 10.0, 10.0, 10.0),
               child: Form(
                 key: _formKey,
-                child: ListView(
-                  shrinkWrap: true,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     showNameinput(response),
                     showCpfinput(response),

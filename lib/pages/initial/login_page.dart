@@ -287,6 +287,7 @@ class _LoginpageState extends State<Loginpage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 6,
         title: const Text(
           'Services ON',
           textAlign: TextAlign.center,
