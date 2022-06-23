@@ -257,26 +257,25 @@ class _ClienteInfoPageState extends State<ClienteInfoPage> {
       ),
       backgroundColor: Colors.white,
       body: Container(
-          alignment: Alignment.center,
-          child: SingleChildScrollView(
-            child: FutureBuilder<IRespCliente>(
-              future: _cliente,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  clientIdButton = snapshot.data!.client_id;
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      _showContainer(snapshot),
-                    ],
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-                return _loadingDialog();
-              },
-            ),
-          )),
+        alignment: Alignment.center,
+        child: FutureBuilder<IRespCliente>(
+          future: _cliente,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              clientIdButton = snapshot.data!.client_id;
+              return Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  _showContainer(snapshot),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+            return _loadingDialog();
+          },
+        ),
+      ),
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
         backgroundColor: Colors.blue[600],

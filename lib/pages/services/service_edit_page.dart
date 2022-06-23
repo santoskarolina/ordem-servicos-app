@@ -222,6 +222,7 @@ class _EditService extends State<EditService> {
             alignment: Alignment.center,
             child: SingleChildScrollView(
               child: Stack(
+                alignment: Alignment.center,
                 children: [
                   _showForm(),
                 ],
