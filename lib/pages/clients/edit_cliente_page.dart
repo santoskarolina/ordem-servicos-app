@@ -256,32 +256,41 @@ class _EditClient extends State<EditClient> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
-        maxLines: 1,
-        controller: cpfController,
-        keyboardType: TextInputType.number,
-        autofocus: false,
-        decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey[100],
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(25.0),
-              borderSide: const BorderSide(color: Colors.black12),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(25.0),
-              borderSide: const BorderSide(color: Colors.black12, width: 0.0),
-            ),
-            hintText: 'CPF',
-            prefixIcon: const Icon(
-              Icons.phone,
-              color: Colors.grey,
-            )),
-        validator: (value) => value!.isEmpty ? 'Informe o CPF' : null,
-      ),
+          maxLines: 1,
+          maxLength: 11,
+          controller: cpfController,
+          keyboardType: TextInputType.number,
+          autofocus: false,
+          decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[100],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black12, width: 0.0),
+              ),
+              hintText: 'CPF',
+              prefixIcon: const Icon(
+                Icons.phone,
+                color: Colors.grey,
+              )),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Informe o cpf';
+            } else if (value.length < 11) {
+              return 'Informe um cpf válido';
+            } else if (value.length > 11) {
+              return 'Informe um cpf válido';
+            }
+            return null;
+          }),
     );
   }
 
