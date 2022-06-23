@@ -8,22 +8,28 @@ class InitialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Services ON',
-          textAlign: TextAlign.center,
+        appBar: AppBar(
+          title: const Text(
+            'Services ON',
+            textAlign: TextAlign.center,
+          ),
+          automaticallyImplyLeading: false,
+          actions: null,
+          centerTitle: true,
+          backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
         ),
-        automaticallyImplyLeading: false,
-        actions: null,
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
-      ),
-      body: Stack(
-        children: [
-          _showForm(context),
-        ],
-      ),
-    );
+        body: Column(
+          mainAxisAlignment:
+              MainAxisAlignment.center, //Center Column contents vertically,,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Stack(
+              children: [
+                _showForm(context),
+              ],
+            ),
+          ],
+        ));
   }
 
   Widget circleImage() {
