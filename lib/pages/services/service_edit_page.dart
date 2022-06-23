@@ -219,10 +219,10 @@ class _EditService extends State<EditService> {
           backgroundColor: Colors.blue[700],
         ),
         body: Container(
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             child: SingleChildScrollView(
               child: Stack(
-                alignment: Alignment.center,
+                // alignment: Alignment.center,
                 children: [
                   _showForm(),
                 ],
