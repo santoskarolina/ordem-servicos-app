@@ -238,7 +238,7 @@ class _LoginpageState extends State<Loginpage> {
 
     var response = await UserService.createAccount(account);
 
-    if (response?.statusCode == 201) {
+    if (response.statusCode == 201) {
       resetForm();
 
       setState(() {
@@ -247,8 +247,9 @@ class _LoginpageState extends State<Loginpage> {
         _isLoginForm = true;
       });
 
-      _showDialog('Usuário criado com sucesso!','Faça login para acessar o sistema', true);
-    } else if (response?.statusCode == 400) {
+      _showDialog('Usuário criado com sucesso!',
+          'Faça login para acessar o sistema', true);
+    } else if (response.statusCode == 400) {
       setState(() {
         _diseableButton = false;
         _isLoading = false;

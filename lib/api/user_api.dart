@@ -33,7 +33,7 @@ class UserService {
     return null;
   }
 
-  static Future<Response?> createAccount(UserCreateAccount user) async {
+  static Future<Response> createAccount(UserCreateAccount user) async {
     var url = Uri.parse('${GlobalApi.url}/user');
     var response2 = await http.post(
       url,
