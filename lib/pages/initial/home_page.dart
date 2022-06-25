@@ -47,6 +47,7 @@ class _HomePage extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        centerTitle: true,
         backgroundColor: const Color.fromRGBO(42, 68, 171, 1),
       ),
       body: _getDrawerItem(_selectedIndex),

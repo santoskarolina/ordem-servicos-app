@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../api/user_api.dart';
+import '../../global_variable.dart';
 import '../../models/user.dart';
 import '../../models/user_model.dart';
 import '../utils/constantes.dart';
 import 'package:select_dialog/select_dialog.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({Key? key}) : super(key: key);
@@ -15,10 +20,10 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfile extends State<MyProfile> {
-  late Future<UserResponse> _userData;
+  late dynamic _userData;
 
   UserUpdatePhotoDto? userUpdatePhotoDto;
-  bool _isLoading = false;
+  bool _isLoadingGetUser = true;
   int userId = 0;
   String? userPhoto;
 
@@ -30,95 +35,33 @@ class _MyProfile extends State<MyProfile> {
   }
 
   void udpateUserPhoto(String photo) async {
-    setState(() {
-      _isLoading = true;
-    });
     UserUpdatePhotoDto userRequest = UserUpdatePhotoDto();
+    userRequest.photo = photo;
 
     var response = await UserService.updateUserPhoto(userRequest, userId);
-    print(response?.body);
-    if (response?.statusCode == 201) {
+    var resBody = json.decode(response!.body);
+    if (response.statusCode == 200) {
       setState(() {
-        _isLoading = false;
+        _userData['photo'] = resBody['photo'];
       });
-      _showDialog('Foto atualizada com sucesso', '', false);
-    } else if (response?.statusCode == 401) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showDialog('Usuário e/ou senha incorretos',
-          'Informe os dados corretamente', false);
-    } else {
-      print(response?.body);
-      setState(() {
-        _isLoading = false;
-      });
-      _showDialog('Não foi possível fazer o login',
-          'Tente novamente mais tarde', false);
-    }
-  }
-
-  void _showDialog(String title, String subtitle, bool success) {
-    showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      final snackBar = SnackBar(
+        content: const Text('Foto atualizada com sucesso!'),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {},
         ),
-        builder: (BuildContext context) {
-          return SizedBox(
-            height: 200,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 20),
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(top: 8.2),
-                    child: Text(
-                      subtitle,
-                      style:
-                          const TextStyle(fontSize: 17, color: Colors.black54),
-                    )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    genericButton(context),
-                  ],
-                )
-              ],
-            ),
-          );
-        });
-  }
-
-  Widget genericButton(context) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(0.0, 45.0, 10.0, 0.0),
-        child: SizedBox(
-          height: 55.0,
-          child: TextButton(
-            onPressed: () {
-              setState(() {
-                userProfile();
-              });
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(11, 122, 222, 1),
-                fixedSize: const Size(150, 100),
-                primary: Colors.blue[600],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )),
-            child: const Text(
-              'Certo',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ),
-        ));
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = SnackBar(
+        content: const Text('Não fo possível atualizar sua foto!'),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {},
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   List<UserAvatar> items = [
@@ -172,10 +115,23 @@ class _MyProfile extends State<MyProfile> {
         photoName: 'Avatar 12'),
   ];
 
-  void userProfile() async {
-    setState(() {
-      _userData = UserService.userProfile();
+  Future<dynamic> userProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var url = Uri.parse('${GlobalApi.url}/user/infos');
+    String? token = prefs.getString('access_token');
+
+    var response = await http.get(url, headers: {
+      'Authorization': 'Bearer $token',
     });
+
+    var resBody = json.decode(response.body);
+
+    setState(() {
+      _userData = resBody;
+      userId = resBody['user_id'];
+      _isLoadingGetUser = false;
+    });
+    return null;
   }
 
   @override
@@ -189,29 +145,25 @@ class _MyProfile extends State<MyProfile> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-        alignment: Alignment.center,
-        child: FutureBuilder<UserResponse>(
-          future: _userData,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Stack(
-                fit: StackFit.expand,
-                alignment: Alignment.center,
-                children: [
-                  _showContainer(snapshot),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
-            return _fetchData();
-          },
-        ),
-      ),
+          alignment: Alignment.center,
+          child: Stack(
+            fit: StackFit.expand,
+            alignment: Alignment.center,
+            children: [
+              _isLoadingGetUser
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height / 1.3,
+                      child: Center(
+                        child: _loadingDialog(),
+                      ),
+                    )
+                  : _showContainer(),
+            ],
+          )),
     );
   }
 
-  Widget _fetchData() {
+  Widget _loadingDialog() {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 16,
@@ -236,7 +188,7 @@ class _MyProfile extends State<MyProfile> {
     );
   }
 
-  Widget nameUser(snapshot) {
+  Widget nameUser() {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       decoration: const BoxDecoration(
@@ -269,7 +221,7 @@ class _MyProfile extends State<MyProfile> {
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
-                      snapshot!.data.email,
+                      _userData['email'],
                       style: TextStyle(color: Colors.grey[700], fontSize: 20),
                     ),
                   ),
@@ -282,7 +234,7 @@ class _MyProfile extends State<MyProfile> {
     );
   }
 
-  Widget creation_dateUser(snapshot) {
+  Widget creation_dateUser() {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
@@ -314,7 +266,7 @@ class _MyProfile extends State<MyProfile> {
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
-                      getFormatedDate(snapshot!.data.creation_date),
+                      getFormatedDate(_userData['creation_date']),
                       style: TextStyle(color: Colors.grey[700], fontSize: 20),
                     ),
                   ),
@@ -327,7 +279,7 @@ class _MyProfile extends State<MyProfile> {
     );
   }
 
-  Widget circleImage(snapshot) {
+  Widget circleImage() {
     return Container(
       width: double.infinity,
       height: 300.0,
@@ -347,14 +299,14 @@ class _MyProfile extends State<MyProfile> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buttonPickAvatar(snapshot),
+          buttonPickAvatar(),
           Text(
-            snapshot.data!.user_name,
+            _userData['user_name'],
             style: const TextStyle(color: Colors.white, fontSize: 28),
           ),
           const SizedBox(height: 10),
           Text(
-            snapshot.data!.occupation_area,
+            _userData['occupation_area'],
             style: const TextStyle(color: Colors.white, fontSize: 22),
           )
         ],
@@ -362,7 +314,7 @@ class _MyProfile extends State<MyProfile> {
     );
   }
 
-  Widget buttonPickAvatar(snapshot) {
+  Widget buttonPickAvatar() {
     return Container(
         padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 9.0),
         child: Stack(
@@ -400,7 +352,7 @@ class _MyProfile extends State<MyProfile> {
                       UserAvatar user = selected;
                       setState(() {
                         userPhoto = user.photoUrl;
-                        // udpateUserPhoto(userPhoto!);
+                        udpateUserPhoto(userPhoto!);
                       });
                     },
                   );
@@ -410,7 +362,7 @@ class _MyProfile extends State<MyProfile> {
                   backgroundColor: MyCustomColors.hexColorCircleAvatar,
                   child: ClipOval(
                     child: Image.network(
-                      snapshot!.data.photo,
+                      _userData['photo'],
                     ),
                   ),
                 )),
@@ -418,16 +370,12 @@ class _MyProfile extends State<MyProfile> {
         ));
   }
 
-  Widget _showContainer(snapshot) {
+  Widget _showContainer() {
     return Container(
       alignment: Alignment.center,
       // padding: const EdgeInsets.all(16.0),
       child: Column(
-        children: [
-          circleImage(snapshot),
-          nameUser(snapshot),
-          creation_dateUser(snapshot)
-        ],
+        children: [circleImage(), nameUser(), creation_dateUser()],
       ),
     );
   }

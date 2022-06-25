@@ -44,7 +44,8 @@ class UserService {
     return response;
   }
 
-  static Future<Response?> updateUserPhoto(UserUpdatePhotoDto user, int id) async {
+  static Future<Response?> updateUserPhoto(
+      UserUpdatePhotoDto user, int id) async {
     var url = Uri.parse('${GlobalApi.url}/user/update-photo/$id');
     var response2 = await http.put(
       url,
