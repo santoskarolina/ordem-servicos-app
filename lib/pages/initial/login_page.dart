@@ -5,6 +5,8 @@
 // ignore_for_file: public_member_api_docs
 
 import 'dart:async';
+import 'package:flutter_application_1/pages/utils/constantes.dart';
+import 'package:select_dialog/select_dialog.dart';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:email_validator/email_validator.dart';
@@ -14,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_application_1/api/user_api.dart';
 import 'package:flutter_application_1/models/user_model.dart';
 import 'home_page.dart';
+import 'package:badges/badges.dart';
 
 class Loginpage extends StatefulWidget {
   final bool loginConfirm;
@@ -31,10 +34,64 @@ class _LoginpageState extends State<Loginpage> {
   TextEditingController occupationAreaController = TextEditingController();
 
   bool _diseableButton = false;
+  bool userHasSelectPhoto = false;
 
-  final Color _accentColor = const Color(0xFF272727);
+  List<UserAvatar> items = [
+    UserAvatar(
+        id: '1',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-01.png',
+        photoName: 'Avatar 01'),
+    UserAvatar(
+        id: '2',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-02.png',
+        photoName: 'Avatar 02'),
+    UserAvatar(
+        id: '3',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-03.png',
+        photoName: 'Avatar 03'),
+    UserAvatar(
+        id: '4',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-04.png',
+        photoName: 'Avatar 04'),
+    UserAvatar(
+        id: '5',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-05.png',
+        photoName: 'Avatar 05'),
+    UserAvatar(
+        id: '6',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-06.png',
+        photoName: 'Avatar 06'),
+    UserAvatar(
+        id: '7',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-07.png',
+        photoName: 'Avatar 07'),
+    UserAvatar(
+        id: '8',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-08.png',
+        photoName: 'Avatar 08'),
+    UserAvatar(
+        id: '9',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-09.png',
+        photoName: 'Avatar 09'),
+    UserAvatar(
+        id: '10',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-10.png',
+        photoName: 'Avatar 10'),
+    UserAvatar(
+        id: '11',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-11.png',
+        photoName: 'Avatar 11'),
+    UserAvatar(
+        id: '12',
+        photoUrl: 'https://services-on.netlify.app/assets/avatar-12.png',
+        photoName: 'Avatar 12'),
+  ];
 
   UserService userService = UserService();
+  UserAvatar? ex1;
+
+  dynamic userPhoto = "https://services-on.netlify.app/assets/user-default.png";
+
   bool _isLoginForm = true;
   bool _isLoading = false;
 
@@ -166,14 +223,22 @@ class _LoginpageState extends State<Loginpage> {
       _isLoading = true;
       _diseableButton = true;
     });
-    UserCreateAccount account = UserCreateAccount(photo: '');
+
+    UserCreateAccount account = UserCreateAccount();
+    if (userPhoto != null) {
+      dynamic photo = userPhoto;
+      account.photo = photo;
+    } else {
+      account.photo = '';
+    }
     account.email = emailController.text;
     account.password = senhaController.text;
     account.user_name = nomeController.text;
     account.occupation_area = occupationAreaController.text;
+
     var response = await UserService.createAccount(account);
 
-    if (response.statusCode == 201) {
+    if (response?.statusCode == 201) {
       resetForm();
 
       setState(() {
@@ -182,9 +247,8 @@ class _LoginpageState extends State<Loginpage> {
         _isLoginForm = true;
       });
 
-      _showDialog('Usuário criado com sucesso!',
-          'Faça login para acessar o sistema', true);
-    } else if (response.statusCode == 400) {
+      _showDialog('Usuário criado com sucesso!','Faça login para acessar o sistema', true);
+    } else if (response?.statusCode == 400) {
       setState(() {
         _diseableButton = false;
         _isLoading = false;
@@ -207,7 +271,7 @@ class _LoginpageState extends State<Loginpage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Ops...'),
-          content: const Text('Voê está sem conexão com a internet'),
+          content: const Text('Você está sem conexão com a internet'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -306,6 +370,30 @@ class _LoginpageState extends State<Loginpage> {
   }
 
   Widget circleImage() {
+    if (!_isLoginForm) {
+      return const SizedBox(
+        height: 0.0,
+        width: 0.0,
+      );
+    } else {
+      return Center(
+        child: Container(
+          width: 310.0,
+          height: 200.0,
+          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 30.0),
+          decoration: const BoxDecoration(
+              shape: BoxShape.rectangle,
+              image: DecorationImage(
+                  fit: BoxFit.contain,
+                  image: AssetImage(
+                    'assets/login.png',
+                  ))),
+        ),
+      );
+    }
+  }
+
+  Widget circleImageNewUser() {
     return Center(
       child: Container(
         width: 310.0,
@@ -315,13 +403,9 @@ class _LoginpageState extends State<Loginpage> {
             shape: BoxShape.rectangle,
             image: DecorationImage(
                 fit: BoxFit.contain,
-                image: _isLoginForm
-                    ? const AssetImage(
-                        'assets/login.png',
-                      )
-                    : const AssetImage(
-                        'assets/account.png',
-                      ))),
+                image: NetworkImage(
+                  userPhoto,
+                ))),
       ),
     );
   }
@@ -543,6 +627,83 @@ class _LoginpageState extends State<Loginpage> {
     }
   }
 
+  Widget buttonPickAvatar() {
+    if (_isLoginForm) {
+      return const SizedBox(
+        width: 0.0,
+        height: 0.0,
+      );
+    } else {
+      return Container(
+          padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 9.0),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              GestureDetector(
+                  onTap: () {
+                    SelectDialog.showModal<dynamic>(
+                      context,
+                      label: "Escolha seu avatar",
+                      items: items,
+                      selectedValue: ex1,
+                      itemBuilder: (context, dynamic item, bool isSelected) {
+                        return Container(
+                          decoration: !isSelected
+                              ? null
+                              : BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white,
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                                backgroundImage: item.photoUrl == null
+                                    ? null
+                                    : NetworkImage(item.photoUrl)),
+                            selected: isSelected,
+                            title: Text(item.photoName),
+                            // subtitle: Text(item.photoName.toString()),
+                          ),
+                        );
+                      },
+                      onChange: (selected) async {
+                        UserAvatar user = selected;
+                        setState(() {
+                          userHasSelectPhoto = true;
+                          userPhoto = user.photoUrl;
+                          ex1 = user;
+                        });
+                      },
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 100,
+                    backgroundColor: MyCustomColors.hexColorCircleAvatar,
+                    child: ClipOval(
+                      child: Image.network(
+                        userPhoto,
+                      ),
+                    ),
+                  )),
+              Positioned(
+                top: 2,
+                right: 110,
+                child: Badge(
+                  badgeColor: Colors.white,
+                  badgeContent: userHasSelectPhoto
+                      ? const Icon(
+                          Icons.check,
+                          color: Colors.green,
+                        )
+                      : const Icon(Icons.question_mark, color: Colors.red),
+                ),
+              ),
+            ],
+          ));
+    }
+  }
+
   Widget showButtonCreateAccount() {
     if (!_isLoginForm) {
       return Padding(
@@ -550,7 +711,7 @@ class _LoginpageState extends State<Loginpage> {
           child: SizedBox(
             height: 55.0,
             child: TextButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_diseableButton) {
                   null;
                 } else if (_formKey.currentState!.validate()) {
@@ -602,6 +763,7 @@ class _LoginpageState extends State<Loginpage> {
             shrinkWrap: true,
             children: <Widget>[
               circleImage(),
+              buttonPickAvatar(),
               showUserNameInput(),
               showOccupationAreaInput(),
               showEmailInput(),

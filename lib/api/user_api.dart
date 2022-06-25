@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import '../global_variable.dart';
 import '../models/user.dart';
-import '../models/user.dart';
 import '../models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,10 +33,20 @@ class UserService {
     return null;
   }
 
-  static Future<Response> createAccount(UserCreateAccount user) async {
-    user.photo = 'https://services-on.netlify.app/assets/user-default.png';
+  static Future<Response?> createAccount(UserCreateAccount user) async {
     var url = Uri.parse('${GlobalApi.url}/user');
     var response2 = await http.post(
+      url,
+      body: user.toJson(),
+    );
+    final response = response2;
+
+    return response;
+  }
+
+  static Future<Response?> updateUserPhoto(UserUpdatePhotoDto user, int id) async {
+    var url = Uri.parse('${GlobalApi.url}/user/update-photo/$id');
+    var response2 = await http.put(
       url,
       body: user.toJson(),
     );

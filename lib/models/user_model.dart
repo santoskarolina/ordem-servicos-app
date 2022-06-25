@@ -56,14 +56,14 @@ class UserCreateAccount {
   String? user_name;
   String? email;
   String? password;
-  String photo;
+  String? photo;
   String? occupation_area;
 
   UserCreateAccount(
       {this.password,
       this.email,
       this.user_name,
-      required this.photo,
+      this.photo,
       this.occupation_area});
 
   Map<String, dynamic> toJson() {
@@ -73,6 +73,38 @@ class UserCreateAccount {
       'user_name': user_name.toString(),
       'photo': photo.toString(),
       'occupation_area': occupation_area.toString(),
+    };
+    return map;
+  }
+}
+
+class UserAvatar {
+  final String id;
+  final String photoUrl;
+  final String photoName;
+
+  UserAvatar(
+      {required this.id, required this.photoUrl, required this.photoName});
+
+  @override
+  String toString() => photoName;
+
+  @override
+  operator ==(o) => o is UserAvatar && o.photoName == photoName;
+
+  @override
+  int get hashCode => id.hashCode ^ photoName.hashCode ^ photoUrl.hashCode;
+}
+
+class UserUpdatePhotoDto {
+  String? photo;
+
+  UserUpdatePhotoDto({
+        this.photo});
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> map = {
+      'photo': photo.toString(),
     };
     return map;
   }
