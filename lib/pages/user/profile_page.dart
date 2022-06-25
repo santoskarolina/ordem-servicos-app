@@ -54,7 +54,7 @@ class _MyProfile extends State<MyProfile> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
       final snackBar = SnackBar(
-        content: const Text('Não fo possível atualizar sua foto!'),
+        content: const Text('Não foi possível atualizar sua foto!'),
         action: SnackBarAction(
           label: 'OK',
           onPressed: () {},
