@@ -27,4 +27,7 @@
 - https://www.mediafire.com/file/0uzlehbuq2an1uw/base.apk/file
 
 #### :small_blue_diamond: Aplicativo executando no android
-![APP](https://github.com/santoskarolina/html/blob/main/app/services-on-app.gif)
+<div>
+<img src="https://github.com/santoskarolina/html/blob/main/app/services-on-app.gif" width="400" height="790">
+</div>
+
