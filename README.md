@@ -21,10 +21,10 @@
 - atualizar
 
 ##### :small_blue_diamond: API utilizada:
-- https://github.com/santoskarolina/ordem-servicos-nestjs
+- https://github.com/santoskarolina/services-order-api
 
 ##### :small_blue_diamond: Link para download da apk
 - https://www.mediafire.com/file/0uzlehbuq2an1uw/base.apk/file
 
 #### :small_blue_diamond: Aplicativo executando no android
-![DOMAIN MODEL](https://github.com/santoskarolina/html/blob/main/app/services-on-app.gif)
+![APP](https://github.com/santoskarolina/html/blob/main/app/services-on-app.gif)
