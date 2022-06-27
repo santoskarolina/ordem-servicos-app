@@ -1,16 +1,30 @@
-# Ordem de serviços aplicação mobile
+### :computer: :pushpin:Sistema Ordem de Serviços - Aplicativo 
 
-A new Flutter project.
+##### Um usuário pode manter e gerenciar suas ordens de serviços, criando e atualiando as mesmas
 
-## Getting Started
+#### :small_blue_diamond: Tecnologias usadas no desenvolvimento:
+- Dart
+- Flutter
 
-This project is a starting point for a Flutter application.
+##### :small_blue_diamond: Métodos para entidade Clientes:
+- inserir
+- deletar
+- encontrar todos
+- encontrar pelo ID
+- atualizar
 
-A few resources to get you started if this is your first Flutter project:
+##### :small_blue_diamond: Métodos para entidade Serviços:
+- inserir
+- deletar
+- encontrar todos
+- encontrar pelo ID
+- atualizar
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+##### :small_blue_diamond: API utilizada:
+- https://github.com/santoskarolina/ordem-servicos-nestjs
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+##### :small_blue_diamond: Link para download da apk
+- https://www.mediafire.com/file/0uzlehbuq2an1uw/base.apk/file
+
+#### :small_blue_diamond: Aplicativo executando no android
+![DOMAIN MODEL](https://github.com/santoskarolina/html/blob/main/app/services-on-app.gif)
